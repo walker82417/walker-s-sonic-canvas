@@ -36,8 +36,14 @@ interface PlayerState {
 
 const Ctx = createContext<PlayerState | null>(null);
 
-export function PlayerProvider({ children }: { children: ReactNode }) {
-  const [tracks] = useState<Track[]>(sampleTracks);
+export function PlayerProvider({
+  children,
+  tracks: tracksProp,
+}: {
+  children: ReactNode;
+  tracks?: Track[];
+}) {
+  const [tracks] = useState<Track[]>(tracksProp?.length ? tracksProp : sampleTracks);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
