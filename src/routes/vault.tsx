@@ -1,14 +1,46 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, Heart, MoreHorizontal } from "lucide-react";
+import { Search, Heart, MoreHorizontal, Loader2, AlertTriangle } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { LyricsSync } from "@/components/player/LyricsSync";
 import { VaultCard } from "@/components/VaultCard";
 import { usePlayer } from "@/components/player/PlayerContext";
+import { fetchGithubData } from "@/lib/fetchGithubData";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/vault")({
   component: VaultPage,
+  loader: () => fetchGithubData(),
+  pendingComponent: () => (
+    <div className="grid min-h-dvh place-items-center text-muted-foreground">
+      <div className="flex items-center gap-3">
+        <Loader2 className="size-5 animate-spin text-primary" />
+        <span className="text-sm">Loading the vault...</span>
+      </div>
+    </div>
+  ),
+  errorComponent: ({ error, reset }) => {
+    const router = useRouter();
+    return (
+      <div className="grid min-h-dvh place-items-center px-6">
+        <div className="glass max-w-md rounded-2xl p-6 text-center">
+          <AlertTriangle className="mx-auto mb-3 size-8 text-destructive" />
+          <h2 className="text-lg font-semibold">Couldn't load the vault</h2>
+          <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
+          <button
+            onClick={() => {
+              router.invalidate();
+              reset();
+            }}
+            className="mt-5 rounded-full bg-foreground px-5 py-2 text-sm font-semibold text-background"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  },
+  notFoundComponent: () => <div className="p-10 text-center">Not found</div>,
   head: () => ({
     meta: [
       { title: "Walker Vault — Lossless Audio | Walker's Music World" },
@@ -22,8 +54,9 @@ export const Route = createFileRoute("/vault")({
 });
 
 function VaultPage() {
+  const { tracks } = Route.useLoaderData();
   return (
-    <AppLayout>
+    <AppLayout tracks={tracks}>
       <VaultInner />
     </AppLayout>
   );
