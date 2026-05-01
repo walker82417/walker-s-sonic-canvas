@@ -14,23 +14,44 @@ interface Props {
 export function LyricsSync({ lyrics, currentTime, onSeek }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const activeRef = useRef<HTMLButtonElement>(null);
+  const lastIndexRef = useRef(-1);
 
+  // Binary search active line for performance with long LRCs
   const activeIndex = useMemo(() => {
-    let idx = -1;
-    for (let i = 0; i < lyrics.length; i++) {
-      if (currentTime >= lyrics[i].time) idx = i;
-      else break;
+    if (!lyrics.length) return -1;
+    let lo = 0;
+    let hi = lyrics.length - 1;
+    let result = -1;
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1;
+      if (lyrics[mid].time <= currentTime) {
+        result = mid;
+        lo = mid + 1;
+      } else {
+        hi = mid - 1;
+      }
     }
-    return idx;
+    return result;
   }, [lyrics, currentTime]);
 
+  // Auto-scroll only when the active line actually changes
   useEffect(() => {
+    if (activeIndex === lastIndexRef.current) return;
+    lastIndexRef.current = activeIndex;
     if (!activeRef.current || !containerRef.current) return;
     const el = activeRef.current;
     const container = containerRef.current;
     const offset = el.offsetTop - container.clientHeight / 2 + el.clientHeight / 2;
-    container.scrollTo({ top: offset, behavior: "smooth" });
+    container.scrollTo({ top: Math.max(0, offset), behavior: "smooth" });
   }, [activeIndex]);
+
+  if (!lyrics.length) {
+    return (
+      <div className="grid h-full place-items-center text-sm text-muted-foreground">
+        No lyrics available for this track.
+      </div>
+    );
+  }
 
   return (
     <div
@@ -58,6 +79,7 @@ export function LyricsSync({ lyrics, currentTime, onSeek }: Props) {
               </span>
               <motion.span
                 animate={{ scale: active ? 1.02 : 1 }}
+                transition={{ duration: 0.2 }}
                 className={cn("flex-1 text-base leading-relaxed", active && "font-semibold")}
               >
                 {line.text}

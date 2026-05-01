@@ -2,8 +2,9 @@ import { type ReactNode, useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { MusicPlayer } from "./player/MusicPlayer";
 import { PlayerProvider } from "./player/PlayerContext";
+import type { Track } from "@/lib/data";
 
-export function AppLayout({ children }: { children: ReactNode }) {
+export function AppLayout({ children, tracks }: { children: ReactNode; tracks?: Track[] }) {
   // Basic protection: disable right-click globally
   useEffect(() => {
     const onContext = (e: MouseEvent) => e.preventDefault();
@@ -12,12 +13,13 @@ export function AppLayout({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <PlayerProvider>
+    <PlayerProvider tracks={tracks}>
       <div className="flex min-h-dvh">
         <Sidebar />
-        <main className="flex-1 pb-32">{children}</main>
+        <main className="flex-1 pb-32 md:pb-28">{children}</main>
       </div>
       <MusicPlayer />
     </PlayerProvider>
   );
 }
+
