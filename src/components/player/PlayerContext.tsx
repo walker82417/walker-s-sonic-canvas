@@ -15,9 +15,13 @@ interface PlayerState {
   currentIndex: number;
   current: Track;
   isPlaying: boolean;
+  isBuffering: boolean;
+  loadError: string | null;
+  buffered: number;
   currentTime: number;
   duration: number;
   volume: number;
+  muted: boolean;
   audioRef: React.RefObject<HTMLAudioElement | null>;
   play: () => void;
   pause: () => void;
@@ -26,6 +30,7 @@ interface PlayerState {
   prev: () => void;
   seek: (t: number) => void;
   setVolume: (v: number) => void;
+  toggleMute: () => void;
   selectTrack: (id: string) => void;
 }
 
