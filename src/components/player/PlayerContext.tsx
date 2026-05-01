@@ -40,15 +40,23 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const [tracks] = useState<Track[]>(sampleTracks);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [buffered, setBuffered] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolumeState] = useState(0.8);
+  const [muted, setMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const current = tracks[currentIndex];
 
   const play = useCallback(() => {
-    audioRef.current?.play().catch(() => setIsPlaying(false));
+    setLoadError(null);
+    audioRef.current?.play().catch((e) => {
+      setIsPlaying(false);
+      setLoadError(e?.message || "Playback failed");
+    });
   }, []);
   const pause = useCallback(() => audioRef.current?.pause(), []);
   const toggle = useCallback(() => {
@@ -70,7 +78,18 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   }, []);
   const setVolume = useCallback((v: number) => {
     setVolumeState(v);
-    if (audioRef.current) audioRef.current.volume = v;
+    setMuted(v === 0);
+    if (audioRef.current) {
+      audioRef.current.volume = v;
+      audioRef.current.muted = v === 0;
+    }
+  }, []);
+  const toggleMute = useCallback(() => {
+    setMuted((m) => {
+      const next = !m;
+      if (audioRef.current) audioRef.current.muted = next;
+      return next;
+    });
   }, []);
   const selectTrack = useCallback(
     (id: string) => {
@@ -83,9 +102,11 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     [tracks],
   );
 
-  // auto-play on track change after first interaction
   useEffect(() => {
     if (!audioRef.current) return;
+    setBuffered(0);
+    setCurrentTime(0);
+    setLoadError(null);
     audioRef.current.load();
     if (isPlaying) {
       audioRef.current.play().catch(() => setIsPlaying(false));
@@ -99,9 +120,13 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       currentIndex,
       current,
       isPlaying,
+      isBuffering,
+      loadError,
+      buffered,
       currentTime,
       duration,
       volume,
+      muted,
       audioRef,
       play,
       pause,
@@ -110,9 +135,10 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       prev,
       seek,
       setVolume,
+      toggleMute,
       selectTrack,
     }),
-    [tracks, currentIndex, current, isPlaying, currentTime, duration, volume, play, pause, toggle, next, prev, seek, setVolume, selectTrack],
+    [tracks, currentIndex, current, isPlaying, isBuffering, loadError, buffered, currentTime, duration, volume, muted, play, pause, toggle, next, prev, seek, setVolume, toggleMute, selectTrack],
   );
 
   return (
@@ -123,10 +149,29 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         src={current.audioUrl}
         preload="metadata"
         crossOrigin="anonymous"
-        onPlay={() => setIsPlaying(true)}
+        controlsList="nodownload noplaybackrate noremoteplayback"
+        onContextMenu={(e) => e.preventDefault()}
+        onPlay={() => {
+          setIsPlaying(true);
+          setLoadError(null);
+        }}
         onPause={() => setIsPlaying(false)}
+        onWaiting={() => setIsBuffering(true)}
+        onCanPlay={() => setIsBuffering(false)}
+        onPlaying={() => setIsBuffering(false)}
         onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime)}
         onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+        onProgress={(e) => {
+          const a = e.currentTarget;
+          if (a.buffered.length && a.duration) {
+            setBuffered(a.buffered.end(a.buffered.length - 1) / a.duration);
+          }
+        }}
+        onError={() => {
+          setIsBuffering(false);
+          setIsPlaying(false);
+          setLoadError("Unable to stream this track.");
+        }}
         onEnded={next}
       />
     </Ctx.Provider>
@@ -138,3 +183,4 @@ export function usePlayer() {
   if (!ctx) throw new Error("usePlayer must be used inside PlayerProvider");
   return ctx;
 }
+
