@@ -2,10 +2,18 @@ import { type ReactNode, useEffect } from "react";
 import { Sidebar } from "./Sidebar";
 import { MusicPlayer } from "./player/MusicPlayer";
 import { PlayerProvider } from "./player/PlayerContext";
+import { Footer } from "./Footer";
 import type { Track } from "@/lib/data";
 
-export function AppLayout({ children, tracks }: { children: ReactNode; tracks?: Track[] }) {
-  // Basic protection: disable right-click globally
+export function AppLayout({
+  children,
+  tracks,
+  hideFooter = false,
+}: {
+  children: ReactNode;
+  tracks?: Track[];
+  hideFooter?: boolean;
+}) {
   useEffect(() => {
     const onContext = (e: MouseEvent) => e.preventDefault();
     document.addEventListener("contextmenu", onContext);
@@ -14,12 +22,12 @@ export function AppLayout({ children, tracks }: { children: ReactNode; tracks?: 
 
   return (
     <PlayerProvider tracks={tracks}>
-      <div className="flex min-h-dvh">
+      <div className="min-h-dvh">
         <Sidebar />
-        <main className="flex-1 pb-32 md:pb-28">{children}</main>
+        <main className="pb-32">{children}</main>
+        {!hideFooter && <Footer />}
       </div>
       <MusicPlayer />
     </PlayerProvider>
   );
 }
-
