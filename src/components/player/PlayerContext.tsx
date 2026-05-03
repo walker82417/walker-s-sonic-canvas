@@ -17,6 +17,7 @@ interface PlayerState {
   isPlaying: boolean;
   isBuffering: boolean;
   loadError: string | null;
+  hasStarted: boolean;
   buffered: number;
   currentTime: number;
   duration: number;
@@ -48,6 +49,7 @@ export function PlayerProvider({
   const [isPlaying, setIsPlaying] = useState(false);
   const [isBuffering, setIsBuffering] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [hasStarted, setHasStarted] = useState(false);
   const [buffered, setBuffered] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -103,6 +105,7 @@ export function PlayerProvider({
       if (idx >= 0) {
         setCurrentIndex(idx);
         setIsPlaying(true);
+        setHasStarted(true);
       }
     },
     [tracks],
@@ -128,6 +131,7 @@ export function PlayerProvider({
       isPlaying,
       isBuffering,
       loadError,
+      hasStarted,
       buffered,
       currentTime,
       duration,
@@ -144,7 +148,7 @@ export function PlayerProvider({
       toggleMute,
       selectTrack,
     }),
-    [tracks, currentIndex, current, isPlaying, isBuffering, loadError, buffered, currentTime, duration, volume, muted, play, pause, toggle, next, prev, seek, setVolume, toggleMute, selectTrack],
+    [tracks, currentIndex, current, isPlaying, isBuffering, loadError, hasStarted, buffered, currentTime, duration, volume, muted, play, pause, toggle, next, prev, seek, setVolume, toggleMute, selectTrack],
   );
 
   return (
@@ -159,6 +163,7 @@ export function PlayerProvider({
         onContextMenu={(e) => e.preventDefault()}
         onPlay={() => {
           setIsPlaying(true);
+          setHasStarted(true);
           setLoadError(null);
         }}
         onPause={() => setIsPlaying(false)}
