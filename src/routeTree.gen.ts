@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as VaultRouteImport } from './routes/vault'
-import { Route as PlaylistsRouteImport } from './routes/playlists'
-import { Route as ContactRouteImport } from './routes/contact'
+import { Route as SubmissionsRouteImport } from './routes/submissions'
+import { Route as PlayerRouteImport } from './routes/player'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -26,14 +26,14 @@ const VaultRoute = VaultRouteImport.update({
   path: '/vault',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PlaylistsRoute = PlaylistsRouteImport.update({
-  id: '/playlists',
-  path: '/playlists',
+const SubmissionsRoute = SubmissionsRouteImport.update({
+  id: '/submissions',
+  path: '/submissions',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
+const PlayerRoute = PlayerRouteImport.update({
+  id: '/player',
+  path: '/player',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -50,16 +50,16 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/contact': typeof ContactRoute
-  '/playlists': typeof PlaylistsRoute
+  '/player': typeof PlayerRoute
+  '/submissions': typeof SubmissionsRoute
   '/vault': typeof VaultRoute
   '/videos': typeof VideosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/contact': typeof ContactRoute
-  '/playlists': typeof PlaylistsRoute
+  '/player': typeof PlayerRoute
+  '/submissions': typeof SubmissionsRoute
   '/vault': typeof VaultRoute
   '/videos': typeof VideosRoute
 }
@@ -67,22 +67,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
-  '/contact': typeof ContactRoute
-  '/playlists': typeof PlaylistsRoute
+  '/player': typeof PlayerRoute
+  '/submissions': typeof SubmissionsRoute
   '/vault': typeof VaultRoute
   '/videos': typeof VideosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact' | '/playlists' | '/vault' | '/videos'
+  fullPaths: '/' | '/about' | '/player' | '/submissions' | '/vault' | '/videos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/playlists' | '/vault' | '/videos'
+  to: '/' | '/about' | '/player' | '/submissions' | '/vault' | '/videos'
   id:
     | '__root__'
     | '/'
     | '/about'
-    | '/contact'
-    | '/playlists'
+    | '/player'
+    | '/submissions'
     | '/vault'
     | '/videos'
   fileRoutesById: FileRoutesById
@@ -90,8 +90,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
-  ContactRoute: typeof ContactRoute
-  PlaylistsRoute: typeof PlaylistsRoute
+  PlayerRoute: typeof PlayerRoute
+  SubmissionsRoute: typeof SubmissionsRoute
   VaultRoute: typeof VaultRoute
   VideosRoute: typeof VideosRoute
 }
@@ -112,18 +112,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VaultRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/playlists': {
-      id: '/playlists'
-      path: '/playlists'
-      fullPath: '/playlists'
-      preLoaderRoute: typeof PlaylistsRouteImport
+    '/submissions': {
+      id: '/submissions'
+      path: '/submissions'
+      fullPath: '/submissions'
+      preLoaderRoute: typeof SubmissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
+    '/player': {
+      id: '/player'
+      path: '/player'
+      fullPath: '/player'
+      preLoaderRoute: typeof PlayerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -146,8 +146,8 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
-  ContactRoute: ContactRoute,
-  PlaylistsRoute: PlaylistsRoute,
+  PlayerRoute: PlayerRoute,
+  SubmissionsRoute: SubmissionsRoute,
   VaultRoute: VaultRoute,
   VideosRoute: VideosRoute,
 }

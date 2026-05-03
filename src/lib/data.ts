@@ -3,6 +3,8 @@ import albumNight from "@/assets/album-endless-night.jpg";
 import albumLight from "@/assets/album-shining-light.jpg";
 import type { LyricLine } from "./lrc";
 
+export type VaultType = "unreleased-music" | "unreleased-video" | "demo" | "bts";
+
 export interface Track {
   id: string;
   title: string;
@@ -13,6 +15,8 @@ export interface Track {
   quality: string;
   format: "FLAC" | "WAV" | "MP3";
   lyrics: LyricLine[];
+  vaultType?: VaultType;
+  year?: number;
 }
 
 export interface Video {
@@ -20,7 +24,16 @@ export interface Video {
   title: string;
   youtubeId: string;
   thumbnail: string;
+  vaultType?: VaultType;
+  year?: number;
 }
+
+export const VAULT_TYPES: { id: VaultType; label: string }[] = [
+  { id: "unreleased-music", label: "Unreleased Music" },
+  { id: "unreleased-video", label: "Unreleased Videos" },
+  { id: "demo", label: "Demos" },
+  { id: "bts", label: "Behind the Scenes" },
+];
 
 const fadeBeyondLyrics: LyricLine[] = [
   { time: 0, text: "I was lost in the dark" },
@@ -41,7 +54,6 @@ const fadeBeyondLyrics: LyricLine[] = [
   { time: 120, text: "We will never say goodbye" },
 ];
 
-// Royalty-free streaming samples
 export const tracks: Track[] = [
   {
     id: "fade-beyond",
@@ -53,6 +65,8 @@ export const tracks: Track[] = [
     quality: "24-bit / 96 KHz",
     format: "FLAC",
     lyrics: fadeBeyondLyrics,
+    vaultType: "unreleased-music",
+    year: 2025,
   },
   {
     id: "endless-night",
@@ -73,6 +87,8 @@ export const tracks: Track[] = [
       { time: 56, text: "Every breath a gentle stand" },
       { time: 64, text: "Every heartbeat leaves a mark" },
     ],
+    vaultType: "demo",
+    year: 2024,
   },
   {
     id: "shining-light",
@@ -89,6 +105,8 @@ export const tracks: Track[] = [
       { time: 16, text: "Then I saw a shining light" },
       { time: 24, text: "Calling me right back home" },
     ],
+    vaultType: "unreleased-music",
+    year: 2025,
   },
 ];
 
@@ -100,3 +118,17 @@ export const videos: Video[] = [
   { id: "5", title: "Darkside — Live", youtubeId: "M-P4QBt-FWw", thumbnail: "https://i.ytimg.com/vi/M-P4QBt-FWw/hqdefault.jpg" },
   { id: "6", title: "Diamond Heart", youtubeId: "Cp5_uo3W9hM", thumbnail: "https://i.ytimg.com/vi/Cp5_uo3W9hM/hqdefault.jpg" },
 ];
+
+export const vaultVideos: Video[] = [
+  { id: "v1", title: "New Single Teaser", youtubeId: "60ItHLz5WEA", thumbnail: "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg", vaultType: "unreleased-video", year: 2025 },
+  { id: "v2", title: "Studio Session — Fade Beyond", youtubeId: "1-xGerv5FOk", thumbnail: "https://i.ytimg.com/vi/1-xGerv5FOk/hqdefault.jpg", vaultType: "bts", year: 2025 },
+  { id: "v3", title: "Acoustic Demo Take 1", youtubeId: "2i2khp_npdE", thumbnail: "https://i.ytimg.com/vi/2i2khp_npdE/hqdefault.jpg", vaultType: "demo", year: 2024 },
+];
+
+export const SOCIAL = {
+  email: "walkersmusicworld@gmail.com",
+  instagram: "https://instagram.com/walkersmuciworld",
+  instagramHandle: "@walkersmuciworld",
+  youtube: "https://youtube.com/@walkersmusicworld",
+  youtubeHandle: "Walker's Music World",
+};

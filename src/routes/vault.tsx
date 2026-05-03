@@ -1,11 +1,12 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Search, Heart, MoreHorizontal, Loader2, AlertTriangle } from "lucide-react";
+import { Search, Loader2, AlertTriangle } from "lucide-react";
+import { useRouter } from "@tanstack/react-router";
 import { AppLayout } from "@/components/AppLayout";
-import { LyricsSync } from "@/components/player/LyricsSync";
 import { VaultCard } from "@/components/VaultCard";
-import { usePlayer } from "@/components/player/PlayerContext";
+import { VideoCard } from "@/components/VideoCard";
 import { fetchGithubData } from "@/lib/fetchGithubData";
+import { vaultVideos, VAULT_TYPES, type VaultType } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/vault")({
@@ -28,10 +29,7 @@ export const Route = createFileRoute("/vault")({
           <h2 className="text-lg font-semibold">Couldn't load the vault</h2>
           <p className="mt-2 text-sm text-muted-foreground">{error.message}</p>
           <button
-            onClick={() => {
-              router.invalidate();
-              reset();
-            }}
+            onClick={() => { router.invalidate(); reset(); }}
             className="mt-5 rounded-full bg-foreground px-5 py-2 text-sm font-semibold text-background"
           >
             Retry
@@ -43,12 +41,8 @@ export const Route = createFileRoute("/vault")({
   notFoundComponent: () => <div className="p-10 text-center">Not found</div>,
   head: () => ({
     meta: [
-      { title: "Walker Vault — Lossless Audio | Walker's Music World" },
-      {
-        name: "description",
-        content:
-          "Stream Walker's Vault — lossless FLAC and WAV with real-time synced lyrics and a cinematic player.",
-      },
+      { title: "Walker Vault — Unreleased Music & Videos | Walker's Music World" },
+      { name: "description", content: "Unreleased tracks, demos and behind-the-scenes from Walker's Music World, in lossless." },
     ],
   }),
 });
@@ -63,117 +57,111 @@ function VaultPage() {
 }
 
 function VaultInner() {
-  const { tracks, current, currentTime, seek } = usePlayer();
-  const [tab, setTab] = useState<"lyrics" | "info">("lyrics");
+  const { tracks } = Route.useLoaderData();
+  const [filter, setFilter] = useState<VaultType | "all">("all");
+  const [query, setQuery] = useState("");
+
+  const q = query.trim().toLowerCase();
+
+  const filteredTracks = tracks.filter((t) => {
+    if (filter !== "all" && t.vaultType !== filter) return false;
+    if (q && !`${t.title} ${t.artist}`.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  const filteredVideos = vaultVideos.filter((v) => {
+    if (filter !== "all" && v.vaultType !== filter) return false;
+    if (q && !v.title.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  const showMusic = filter === "all" || filter === "unreleased-music" || filter === "demo";
+  const showVideo = filter === "all" || filter === "unreleased-video" || filter === "bts";
 
   return (
-    <div className="px-4 py-4 md:px-6">
-      {/* Top search bar */}
-      <div className="glass mb-4 flex items-center gap-3 rounded-2xl px-5 py-3">
-        <Search className="size-4 text-muted-foreground" />
-        <input
-          placeholder="Search for songs, videos, artists..."
-          className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-        />
-      </div>
+    <div className="px-4 py-6 md:px-10 md:py-10">
+      <header className="mb-6">
+        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">Walker Vault</p>
+        <h1 className="mt-2 text-4xl font-bold tracking-tight md:text-5xl">Unreleased & Behind the Scenes</h1>
+        <p className="mt-3 max-w-2xl text-muted-foreground">
+          A private corner of the world. Demos, scrapped takes, video sketches and the work in between.
+        </p>
+      </header>
 
-      {/* Now playing + lyrics */}
-      <div className="glass grid gap-6 rounded-3xl p-6 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
-        <div>
-          <div className="overflow-hidden rounded-2xl shadow-elevated">
-            <img
-              src={current.artwork}
-              alt={current.title}
-              className="aspect-square w-full object-cover"
-            />
-          </div>
-          <div className="mt-5 flex items-start justify-between gap-3">
-            <div>
-              <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
-                {current.title}
-                <span className="rounded bg-primary/15 px-1.5 py-0.5 text-[10px] font-bold text-primary">HQ</span>
-              </h1>
-              <p className="mt-1 text-muted-foreground">{current.artist}</p>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="grid size-10 place-items-center rounded-full glass hover:text-primary" aria-label="Like">
-                <Heart className="size-4" />
-              </button>
-              <button className="grid size-10 place-items-center rounded-full glass" aria-label="More">
-                <MoreHorizontal className="size-4" />
-              </button>
-            </div>
-          </div>
-          {/* Faux waveform for cinematic feel */}
-          <div className="mt-5 flex h-14 items-center gap-[3px]">
-            {Array.from({ length: 80 }).map((_, i) => {
-              const progress = currentTime / (current.duration || 1);
-              const played = i / 80 < progress;
-              const h = 20 + Math.abs(Math.sin(i * 0.7)) * 80;
-              return (
-                <span
-                  key={i}
-                  className={cn("w-[3px] rounded-full transition-colors", played ? "bg-foreground/80" : "bg-foreground/20")}
-                  style={{ height: `${h}%` }}
-                />
-              );
-            })}
-          </div>
+      <div className="glass mb-6 flex flex-col gap-4 rounded-2xl p-4 md:flex-row md:items-center md:justify-between md:p-5">
+        <div className="flex items-center gap-3">
+          <Search className="size-4 text-muted-foreground" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search the vault..."
+            className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          />
         </div>
-
-        <div className="flex min-h-[520px] flex-col">
-          <div className="flex items-center justify-between border-b border-border">
-            <div className="flex gap-6">
-              {(["lyrics", "info"] as const).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setTab(t)}
-                  className={cn(
-                    "relative pb-3 text-sm font-semibold uppercase tracking-widest transition",
-                    tab === t ? "text-foreground" : "text-muted-foreground hover:text-foreground/80",
-                  )}
-                >
-                  {t}
-                  {tab === t && (
-                    <span className="absolute bottom-[-1px] left-0 right-0 h-0.5 rounded-full bg-primary" />
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="flex-1 overflow-hidden">
-            {tab === "lyrics" ? (
-              <LyricsSync lyrics={current.lyrics} currentTime={currentTime} onSeek={seek} />
-            ) : (
-              <div className="space-y-4 py-6 text-sm">
-                <Info label="Title" value={current.title} />
-                <Info label="Artist" value={current.artist} />
-                <Info label="Format" value={current.format} />
-                <Info label="Quality" value={current.quality} />
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Library */}
-      <section className="mt-8">
-        <h2 className="mb-4 text-xl font-bold tracking-tight">From the Vault</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {tracks.map((t) => (
-            <VaultCard key={t.id} track={t} />
+        <div className="-mx-1 flex flex-wrap gap-2 overflow-x-auto">
+          <FilterChip active={filter === "all"} onClick={() => setFilter("all")}>All</FilterChip>
+          {VAULT_TYPES.map((t) => (
+            <FilterChip key={t.id} active={filter === t.id} onClick={() => setFilter(t.id)}>
+              {t.label}
+            </FilterChip>
           ))}
         </div>
-      </section>
+      </div>
+
+      {showMusic && (
+        <section className="mb-12">
+          <h2 className="mb-4 text-xl font-bold tracking-tight">Audio</h2>
+          {filteredTracks.length === 0 ? (
+            <EmptyHint />
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {filteredTracks.map((t) => <VaultCard key={t.id} track={t} />)}
+            </div>
+          )}
+        </section>
+      )}
+
+      {showVideo && (
+        <section>
+          <h2 className="mb-4 text-xl font-bold tracking-tight">Video</h2>
+          {filteredVideos.length === 0 ? (
+            <EmptyHint />
+          ) : (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {filteredVideos.map((v) => <VideoCard key={v.id} video={v} />)}
+            </div>
+          )}
+        </section>
+      )}
+
+      <div className="mt-12 glass rounded-2xl p-6 text-sm text-muted-foreground">
+        Want to hear the full release first? Subscribe on{" "}
+        <a className="text-primary underline" href="https://youtube.com/@walkersmusicworld" target="_blank" rel="noreferrer">YouTube</a>{" "}
+        or send us your own work via <Link to="/submissions" className="text-primary underline">Submissions</Link>.
+      </div>
     </div>
   );
 }
 
-function Info({ label, value }: { label: string; value: string }) {
+function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {
   return (
-    <div className="flex justify-between border-b border-border/50 pb-3">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="font-medium">{value}</span>
+    <button
+      onClick={onClick}
+      className={cn(
+        "shrink-0 rounded-full border px-4 py-1.5 text-xs font-semibold tracking-wide transition",
+        active
+          ? "border-transparent bg-foreground text-background shadow-glow"
+          : "border-border bg-foreground/5 text-muted-foreground hover:text-foreground",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+function EmptyHint() {
+  return (
+    <div className="glass rounded-2xl p-8 text-center text-sm text-muted-foreground">
+      Nothing in this filter yet. Check back soon.
     </div>
   );
 }
