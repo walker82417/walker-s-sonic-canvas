@@ -29,14 +29,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Walker's Music World" },
+      { name: "description", content: "Where music meet emotion and energy" },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Walker's Music World" },
+      { property: "og:description", content: "Where music meet emotion and energy" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Walker's Music World" },
+      { name: "twitter:description", content: "Where music meet emotion and energy" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/PYny1qtn5Qch2NQqpnbHDRLN11X2/social-images/social-1777901492345-AlanWalker_750x450.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/PYny1qtn5Qch2NQqpnbHDRLN11X2/social-images/social-1777901492345-AlanWalker_750x450.webp" },
     ],
     links: [
       {
