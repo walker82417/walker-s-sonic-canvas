@@ -8,11 +8,11 @@
  *     "title": "Fade Beyond",
  *     "artist": "Walker's Music World",
  *     "artwork": "https://raw.githubusercontent.com/.../images/fade.jpg",
- *     "audioUrl": "https://raw.githubusercontent.com/.../audio/fade.flac",
+ *     "audioUrl": "https://raw.githubusercontent.com/.../audio/fade.mp3",
  *     "lyricsUrl": "https://raw.githubusercontent.com/.../lyrics/fade.lrc",
  *     "duration": 222,
- *     "quality": "24-bit / 96 KHz",
- *     "format": "FLAC"
+ *     "quality": "Studio quality",
+ *     "format": "Studio"
  *   }],
  *   "videos": [...]
  * }
