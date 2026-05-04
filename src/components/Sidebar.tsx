@@ -65,14 +65,14 @@ export function Sidebar() {
       <aside
         onMouseLeave={() => setOpen(false)}
         className={cn(
-          "fixed left-0 top-0 z-50 flex h-dvh w-72 shrink-0 flex-col gap-2 p-4",
+          "fixed left-0 top-0 z-50 flex h-dvh w-72 shrink-0 flex-col gap-2 p-4 opacity-80",
           "transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
-          mobileOpen ? "translate-x-0" : "-translate-x-full",
+          mobileOpen ? "translate-x-0 opacity-100" : "-translate-x-full",
           "md:translate-x-[-100%]",
           open && "md:translate-x-0",
         )}
       >
-        <div className="glass mb-2 flex items-center justify-between gap-3 rounded-2xl p-5">
+        <div className="glass-strong mb-2 flex items-center justify-between gap-3 rounded-2xl p-5">
           <Link to="/" className="flex items-center gap-3">
             <div className="grid size-10 place-items-center rounded-lg bg-foreground/95 text-background font-bold">W</div>
             <div className="leading-tight">
@@ -89,7 +89,7 @@ export function Sidebar() {
           </button>
         </div>
 
-        <nav className="glass flex-1 rounded-2xl p-3">
+        <nav className="glass-strong flex-1 rounded-2xl p-3">
           <ul className="space-y-1">
             {nav.map(({ to, label, icon: Icon }) => {
               const active = pathname === to;
@@ -113,15 +113,15 @@ export function Sidebar() {
           </ul>
         </nav>
 
-        <div className="glass rounded-2xl p-4">
+        <div className="glass-strong rounded-2xl p-4">
           <div className="flex items-start gap-3">
             <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
               <Headphones className="size-5" />
             </div>
             <div>
-              <div className="text-sm font-semibold">LOSSLESS AUDIO</div>
+              <div className="text-sm font-semibold">FOR THE WALKERS</div>
               <p className="mt-1 text-xs leading-snug text-muted-foreground">
-                Every detail in studio quality.
+                Built by a fan, for the family.
               </p>
             </div>
           </div>
