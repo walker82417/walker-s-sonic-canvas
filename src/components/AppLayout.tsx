@@ -3,6 +3,7 @@ import { Sidebar } from "./Sidebar";
 import { MusicPlayer } from "./player/MusicPlayer";
 import { PlayerProvider } from "./player/PlayerContext";
 import { Footer } from "./Footer";
+import { CopyrightNotice } from "./CopyrightNotice";
 import type { Track } from "@/lib/data";
 
 export function AppLayout({
@@ -22,6 +23,7 @@ export function AppLayout({
 
   return (
     <PlayerProvider tracks={tracks}>
+      <CopyrightNotice />
       <div className="min-h-dvh">
         <Sidebar />
         <main className="pb-32">{children}</main>

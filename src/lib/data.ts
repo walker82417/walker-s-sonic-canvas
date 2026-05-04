@@ -4,6 +4,7 @@ import albumLight from "@/assets/album-shining-light.jpg";
 import type { LyricLine } from "./lrc";
 
 export type VaultType = "unreleased-music" | "unreleased-video" | "demo" | "bts";
+export type VideoCategory = "official" | "remix" | "lyrics" | "live" | "cover";
 
 export interface Track {
   id: string;
@@ -13,7 +14,7 @@ export interface Track {
   audioUrl: string;
   duration: number;
   quality: string;
-  format: "FLAC" | "WAV" | "MP3";
+  format: "HQ" | "Studio" | "Standard";
   lyrics: LyricLine[];
   vaultType?: VaultType;
   year?: number;
@@ -26,6 +27,9 @@ export interface Video {
   thumbnail: string;
   vaultType?: VaultType;
   year?: number;
+  category?: VideoCategory;
+  description?: string;
+  credits?: string;
 }
 
 export const VAULT_TYPES: { id: VaultType; label: string }[] = [
@@ -33,6 +37,14 @@ export const VAULT_TYPES: { id: VaultType; label: string }[] = [
   { id: "unreleased-video", label: "Unreleased Videos" },
   { id: "demo", label: "Demos" },
   { id: "bts", label: "Behind the Scenes" },
+];
+
+export const VIDEO_CATEGORIES: { id: VideoCategory; label: string }[] = [
+  { id: "official", label: "Official" },
+  { id: "remix", label: "Remix" },
+  { id: "lyrics", label: "Lyrics" },
+  { id: "live", label: "Live" },
+  { id: "cover", label: "Covers" },
 ];
 
 const fadeBeyondLyrics: LyricLine[] = [
@@ -62,8 +74,8 @@ export const tracks: Track[] = [
     artwork: albumFade,
     audioUrl: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3",
     duration: 222,
-    quality: "24-bit / 96 KHz",
-    format: "FLAC",
+    quality: "Studio quality",
+    format: "Studio",
     lyrics: fadeBeyondLyrics,
     vaultType: "unreleased-music",
     year: 2025,
@@ -75,8 +87,8 @@ export const tracks: Track[] = [
     artwork: albumNight,
     audioUrl: "https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a73467.mp3",
     duration: 180,
-    quality: "24-bit / 96 KHz",
-    format: "FLAC",
+    quality: "Studio quality",
+    format: "Studio",
     lyrics: [
       { time: 0, text: "Stars above are calling out my name" },
       { time: 8, text: "Through the silence I can hear them sing" },
@@ -97,8 +109,8 @@ export const tracks: Track[] = [
     artwork: albumLight,
     audioUrl: "https://cdn.pixabay.com/download/audio/2023/06/28/audio_8eecf3c7f6.mp3",
     duration: 195,
-    quality: "16-bit / 44.1 KHz",
-    format: "WAV",
+    quality: "High quality",
+    format: "HQ",
     lyrics: [
       { time: 0, text: "Walking down a winding road" },
       { time: 8, text: "Carrying the weight alone" },
@@ -111,17 +123,17 @@ export const tracks: Track[] = [
 ];
 
 export const videos: Video[] = [
-  { id: "1", title: "Faded — Walker Cover", youtubeId: "60ItHLz5WEA", thumbnail: "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg" },
-  { id: "2", title: "Alone — Acoustic Session", youtubeId: "1-xGerv5FOk", thumbnail: "https://i.ytimg.com/vi/1-xGerv5FOk/hqdefault.jpg" },
-  { id: "3", title: "Sing Me to Sleep", youtubeId: "2i2khp_npdE", thumbnail: "https://i.ytimg.com/vi/2i2khp_npdE/hqdefault.jpg" },
-  { id: "4", title: "All Falls Down", youtubeId: "6RLLOEzdxsM", thumbnail: "https://i.ytimg.com/vi/6RLLOEzdxsM/hqdefault.jpg" },
-  { id: "5", title: "Darkside — Live", youtubeId: "M-P4QBt-FWw", thumbnail: "https://i.ytimg.com/vi/M-P4QBt-FWw/hqdefault.jpg" },
-  { id: "6", title: "Diamond Heart", youtubeId: "Cp5_uo3W9hM", thumbnail: "https://i.ytimg.com/vi/Cp5_uo3W9hM/hqdefault.jpg" },
+  { id: "1", title: "Faded, Walker Cover", youtubeId: "60ItHLz5WEA", thumbnail: "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg", category: "cover", description: "A heartfelt cover of Faded by Alan Walker.", credits: "Original by Alan Walker. All rights to the original creators." },
+  { id: "2", title: "Alone, Acoustic Session", youtubeId: "1-xGerv5FOk", thumbnail: "https://i.ytimg.com/vi/1-xGerv5FOk/hqdefault.jpg", category: "live", description: "An intimate acoustic take recorded live.", credits: "Original by Alan Walker. All rights to the original creators." },
+  { id: "3", title: "Sing Me to Sleep", youtubeId: "2i2khp_npdE", thumbnail: "https://i.ytimg.com/vi/2i2khp_npdE/hqdefault.jpg", category: "official", description: "Official Walker's Music World feature.", credits: "All rights to the original creators." },
+  { id: "4", title: "All Falls Down, Lyrics", youtubeId: "6RLLOEzdxsM", thumbnail: "https://i.ytimg.com/vi/6RLLOEzdxsM/hqdefault.jpg", category: "lyrics", description: "Lyric visual for All Falls Down.", credits: "All rights to the original creators." },
+  { id: "5", title: "Darkside, Live", youtubeId: "M-P4QBt-FWw", thumbnail: "https://i.ytimg.com/vi/M-P4QBt-FWw/hqdefault.jpg", category: "live", description: "A live performance of Darkside.", credits: "All rights to the original creators." },
+  { id: "6", title: "Diamond Heart Remix", youtubeId: "Cp5_uo3W9hM", thumbnail: "https://i.ytimg.com/vi/Cp5_uo3W9hM/hqdefault.jpg", category: "remix", description: "A community remix of Diamond Heart.", credits: "All rights to the original creators." },
 ];
 
 export const vaultVideos: Video[] = [
   { id: "v1", title: "New Single Teaser", youtubeId: "60ItHLz5WEA", thumbnail: "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg", vaultType: "unreleased-video", year: 2025 },
-  { id: "v2", title: "Studio Session — Fade Beyond", youtubeId: "1-xGerv5FOk", thumbnail: "https://i.ytimg.com/vi/1-xGerv5FOk/hqdefault.jpg", vaultType: "bts", year: 2025 },
+  { id: "v2", title: "Studio Session, Fade Beyond", youtubeId: "1-xGerv5FOk", thumbnail: "https://i.ytimg.com/vi/1-xGerv5FOk/hqdefault.jpg", vaultType: "bts", year: 2025 },
   { id: "v3", title: "Acoustic Demo Take 1", youtubeId: "2i2khp_npdE", thumbnail: "https://i.ytimg.com/vi/2i2khp_npdE/hqdefault.jpg", vaultType: "demo", year: 2024 },
 ];
 
