@@ -8,7 +8,7 @@ export const Route = createFileRoute("/submissions")({
   component: SubmissionsPage,
   head: () => ({
     meta: [
-      { title: "Submissions — Share Your Sound | Walker's Music World" },
+      { title: "Submissions | Walker's Music World" },
       { name: "description", content: "Submit your music, covers and visuals to be featured on Walker's Music World." },
     ],
   }),
@@ -57,14 +57,15 @@ function SubmissionsInner() {
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">For the Walkers</p>
         <h1 className="mt-2 text-4xl font-bold tracking-tight md:text-5xl text-glow">Submit Your Creativity</h1>
         <p className="mt-4 max-w-2xl text-muted-foreground">
-          Walker's Music World was built to amplify the community. If you're an artist, producer, vocalist or visual creator,
-          send us your work and we'll showcase it to a wider audience of fellow walkers.
+          Walker's Music World was built to amplify the community. We promote your work for free because this platform
+          exists because of you. If you're an artist, producer, vocalist or visual creator, send us your work and we will
+          showcase it to a wider audience of fellow Walkers.
         </p>
       </header>
 
       <section className="mt-10 grid gap-4 md:grid-cols-3">
         {[
-          { icon: Music, t: "Music", d: "Originals, covers, beats. FLAC, WAV or high-bitrate MP3." },
+          { icon: Music, t: "Music", d: "Originals, covers and beats. Send a high quality audio file or a streaming link." },
           { icon: Video, t: "Videos", d: "Music videos, live sessions, lyric visuals." },
           { icon: Sparkles, t: "Visuals", d: "Cover art, motion design, photography." },
         ].map(({ icon: Icon, t, d }) => (
