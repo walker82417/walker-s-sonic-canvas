@@ -8,7 +8,7 @@ export const Route = createFileRoute("/")({
   component: Index,
   head: () => ({
     meta: [
-      { title: "Walker's Music World — Where Music Meets Emotion and Energy" },
+      { title: "Walker's Music World, Where Music Meets Emotion and Energy" },
       { name: "description", content: "Walker's Music World, a fan home celebrating Alan Walker's music, videos and the global Walker community." },
       { property: "og:title", content: "Walker's Music World" },
       { property: "og:description", content: "Where Music Meets Emotion and Energy." },

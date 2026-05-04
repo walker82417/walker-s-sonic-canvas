@@ -123,7 +123,7 @@ export const tracks: Track[] = [
 ];
 
 export const videos: Video[] = [
-  { id: "1", title: "Faded — Walker Cover", youtubeId: "60ItHLz5WEA", thumbnail: "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg", category: "cover", description: "A heartfelt cover of Faded by Alan Walker.", credits: "Original by Alan Walker. All rights to the original creators." },
+  { id: "1", title: "Faded, Walker Cover", youtubeId: "60ItHLz5WEA", thumbnail: "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg", category: "cover", description: "A heartfelt cover of Faded by Alan Walker.", credits: "Original by Alan Walker. All rights to the original creators." },
   { id: "2", title: "Alone, Acoustic Session", youtubeId: "1-xGerv5FOk", thumbnail: "https://i.ytimg.com/vi/1-xGerv5FOk/hqdefault.jpg", category: "live", description: "An intimate acoustic take recorded live.", credits: "Original by Alan Walker. All rights to the original creators." },
   { id: "3", title: "Sing Me to Sleep", youtubeId: "2i2khp_npdE", thumbnail: "https://i.ytimg.com/vi/2i2khp_npdE/hqdefault.jpg", category: "official", description: "Official Walker's Music World feature.", credits: "All rights to the original creators." },
   { id: "4", title: "All Falls Down, Lyrics", youtubeId: "6RLLOEzdxsM", thumbnail: "https://i.ytimg.com/vi/6RLLOEzdxsM/hqdefault.jpg", category: "lyrics", description: "Lyric visual for All Falls Down.", credits: "All rights to the original creators." },

@@ -24,7 +24,7 @@ function SubmissionsPage() {
 
 function SubmissionsInner() {
   const [copied, setCopied] = useState(false);
-  const subject = encodeURIComponent("Submission — Walker's Music World");
+  const subject = encodeURIComponent("Submission for Walker's Music World");
   const body = encodeURIComponent(
     [
       "Hey Walker's Music World team,",
