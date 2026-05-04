@@ -15,7 +15,10 @@ export function Footer() {
             </div>
           </div>
           <p className="mt-4 max-w-sm text-sm text-muted-foreground">
-            Cinematic lossless streaming, synced lyrics, curated videos and a vault of unreleased work for the Walker community.
+            A fan home built out of love for Alan Walker, celebrating the music, the moments and the global Walker community.
+          </p>
+          <p className="mt-3 max-w-sm text-xs text-muted-foreground">
+            All original music and video content copyright belongs to the respective owners.
           </p>
         </div>
 
@@ -54,8 +57,8 @@ export function Footer() {
       </div>
 
       <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground md:flex-row">
-        <span>© {new Date().getFullYear()} Walker's Music World. All rights reserved.</span>
-        <span>Crafted for listeners who care about sound.</span>
+        <span>© {new Date().getFullYear()} Walker's Music World. A fan made tribute. All rights to the original creators.</span>
+        <span>Walker#82417</span>
       </div>
     </footer>
   );

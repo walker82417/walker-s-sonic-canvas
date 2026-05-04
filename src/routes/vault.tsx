@@ -41,8 +41,8 @@ export const Route = createFileRoute("/vault")({
   notFoundComponent: () => <div className="p-10 text-center">Not found</div>,
   head: () => ({
     meta: [
-      { title: "Walker Vault — Unreleased Music & Videos | Walker's Music World" },
-      { name: "description", content: "Unreleased tracks, demos and behind-the-scenes from Walker's Music World, in lossless." },
+      { title: "Walker Vault | Walker's Music World" },
+      { name: "description", content: "Unreleased tracks, demos and behind the scenes from Walker's Music World." },
     ],
   }),
 });
@@ -134,9 +134,9 @@ function VaultInner() {
       )}
 
       <div className="mt-12 glass rounded-2xl p-6 text-sm text-muted-foreground">
-        Want to hear the full release first? Subscribe on{" "}
-        <a className="text-primary underline" href="https://youtube.com/@walkersmusicworld" target="_blank" rel="noreferrer">YouTube</a>{" "}
-        or send us your own work via <Link to="/submissions" className="text-primary underline">Submissions</Link>.
+        We promote your work for free. This platform exists because of you, and it is here to support every fellow Walker's
+        creativity by sharing it with the world. Send us your work via{" "}
+        <Link to="/submissions" className="text-primary underline">Submissions</Link> and let's amplify it together.
       </div>
     </div>
   );
