@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Walker's Music World — Where Music Meets Emotion and Energy" },
-      { name: "description", content: "Walker's Music World — cinematic lossless audio, synced lyrics, curated YouTube videos and a vault of unreleased work." },
+      { name: "description", content: "Walker's Music World, a fan home celebrating Alan Walker's music, videos and the global Walker community." },
       { property: "og:title", content: "Walker's Music World" },
       { property: "og:description", content: "Where Music Meets Emotion and Energy." },
     ],
@@ -29,7 +29,7 @@ function Index() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-foreground/5 px-4 py-1.5 text-xs tracking-widest text-muted-foreground backdrop-blur"
           >
-            <Sparkles className="size-3" /> LOSSLESS · FLAC · WAV · SYNCED LYRICS
+            <Sparkles className="size-3" /> A HOME FOR THE WALKER COMMUNITY
           </motion.span>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -45,7 +45,7 @@ function Index() {
             transition={{ delay: 0.1 }}
             className="mt-6 max-w-xl text-lg text-muted-foreground md:text-xl"
           >
-            Where music meets emotion and energy. Cinematic streaming, real-time lyrics, every detail in studio quality.
+            Where music meets emotion and energy. A fan space built out of pure love for Alan Walker, for every Walker out there.
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -63,27 +63,13 @@ function Index() {
         </div>
       </section>
 
-      {/* FEATURES */}
-      <section className="mx-4 mt-8 grid gap-4 md:grid-cols-3">
-        {[
-          { t: "Lossless Streaming", d: "24-bit / 96 KHz FLAC and WAV. Pure detail, no compromise." },
-          { t: "Synced Lyrics", d: "Lyrics that move with the music in real time. Tap any line to seek." },
-          { t: "Cinematic UI", d: "Glassmorphic, minimal and built for the listening experience." },
-        ].map((f) => (
-          <div key={f.t} className="glass rounded-2xl p-6">
-            <h3 className="text-base font-semibold">{f.t}</h3>
-            <p className="mt-2 text-sm text-muted-foreground">{f.d}</p>
-          </div>
-        ))}
-      </section>
-
       {/* EXPLORE TILES */}
       <section className="mx-4 mt-10">
         <h2 className="mb-5 text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">Explore the world</h2>
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Tile to="/videos" icon={Headphones} title="Videos" desc="Live sessions, covers and visuals." />
           <Tile to="/vault" icon={Library} title="Walker Vault" desc="Unreleased music and demos." />
-          <Tile to="/player" icon={Disc3} title="Music Player" desc="Cinematic immersive listening." />
+          <Tile to="/player" icon={Disc3} title="Music Player" desc="Immersive listening for every Walker." />
           <Tile to="/submissions" icon={Send} title="Submissions" desc="Share your own creativity." />
         </div>
       </section>
