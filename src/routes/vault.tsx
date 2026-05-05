@@ -63,7 +63,7 @@ function VaultInner() {
 
   const q = query.trim().toLowerCase();
 
-  const filteredTracks = tracks.filter((t) => {
+  const filteredTracks = (tracks as import("@/lib/data").Track[]).filter((t) => {
     if (filter !== "all" && t.vaultType !== filter) return false;
     if (q && !`${t.title} ${t.artist}`.toLowerCase().includes(q)) return false;
     return true;
@@ -114,7 +114,7 @@ function VaultInner() {
             <EmptyHint />
           ) : (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {filteredTracks.map((t) => <VaultCard key={t.id} track={t} />)}
+              {filteredTracks.map((t: import("@/lib/data").Track) => <VaultCard key={t.id} track={t} />)}
             </div>
           )}
         </section>
