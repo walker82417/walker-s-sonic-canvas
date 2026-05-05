@@ -1,6 +1,11 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { PlayerProvider } from "@/components/player/PlayerContext";
+import { MusicPlayer } from "@/components/player/MusicPlayer";
+import { CopyrightNotice } from "@/components/CopyrightNotice";
+import { useEffect } from "react";
+import { loadAllTracks } from "@/lib/content";
 
 function NotFoundComponent() {
   return (
@@ -30,24 +35,16 @@ export const Route = createRootRoute({
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Walker's Music World" },
-      { name: "description", content: "Where music meet emotion and energy" },
-      { name: "author", content: "Lovable" },
+      { name: "description", content: "Where music meets emotion and energy" },
+      { name: "author", content: "Walker's Music World" },
       { property: "og:title", content: "Walker's Music World" },
-      { property: "og:description", content: "Where music meet emotion and energy" },
+      { property: "og:description", content: "Where music meets emotion and energy" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Walker's Music World" },
-      { name: "twitter:description", content: "Where music meet emotion and energy" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/PYny1qtn5Qch2NQqpnbHDRLN11X2/social-images/social-1777901492345-AlanWalker_750x450.webp" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/PYny1qtn5Qch2NQqpnbHDRLN11X2/social-images/social-1777901492345-AlanWalker_750x450.webp" },
+      { name: "twitter:description", content: "Where music meets emotion and energy" },
     ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
+    links: [{ rel: "stylesheet", href: appCss }],
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -69,5 +66,18 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
-  return <Outlet />;
+  // Right-click protection across the whole app
+  useEffect(() => {
+    const onContext = (e: MouseEvent) => e.preventDefault();
+    document.addEventListener("contextmenu", onContext);
+    return () => document.removeEventListener("contextmenu", onContext);
+  }, []);
+
+  return (
+    <PlayerProvider tracks={loadAllTracks()}>
+      <CopyrightNotice />
+      <Outlet />
+      <MusicPlayer />
+    </PlayerProvider>
+  );
 }
