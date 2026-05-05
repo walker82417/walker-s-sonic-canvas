@@ -3,7 +3,8 @@ import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, X } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
-import { videos, VIDEO_CATEGORIES, type Video, type VideoCategory } from "@/lib/data";
+import { VIDEO_CATEGORIES, type Video, type VideoCategory } from "@/lib/data";
+import { loadAllVideos } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/videos")({
@@ -17,12 +18,13 @@ export const Route = createFileRoute("/videos")({
 });
 
 function VideosPage() {
+  const allVideos = loadAllVideos();
   const [filter, setFilter] = useState<VideoCategory | "all">("all");
   const [active, setActive] = useState<Video | null>(null);
 
   const filtered = useMemo(
-    () => (filter === "all" ? videos : videos.filter((v) => v.category === filter)),
-    [filter],
+    () => (filter === "all" ? allVideos : allVideos.filter((v) => v.category === filter)),
+    [filter, allVideos],
   );
 
   return (
