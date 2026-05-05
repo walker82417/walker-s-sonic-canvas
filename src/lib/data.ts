@@ -4,7 +4,8 @@ import albumLight from "@/assets/album-shining-light.jpg";
 import type { LyricLine } from "./lrc";
 
 export type VaultType = "unreleased-music" | "unreleased-video" | "demo" | "bts";
-export type VideoCategory = "official" | "remix" | "lyrics" | "live" | "cover";
+export type VideoCategory = "official" | "remix" | "cover" | "live" | "lyrics" | "blog";
+export type MusicCategory = "official" | "remix" | "cover";
 
 export interface Track {
   id: string;
@@ -18,6 +19,7 @@ export interface Track {
   lyrics: LyricLine[];
   vaultType?: VaultType;
   year?: number;
+  category?: MusicCategory;
 }
 
 export interface Video {
@@ -42,9 +44,10 @@ export const VAULT_TYPES: { id: VaultType; label: string }[] = [
 export const VIDEO_CATEGORIES: { id: VideoCategory; label: string }[] = [
   { id: "official", label: "Official" },
   { id: "remix", label: "Remix" },
-  { id: "lyrics", label: "Lyrics" },
-  { id: "live", label: "Live" },
   { id: "cover", label: "Covers" },
+  { id: "live", label: "Live" },
+  { id: "lyrics", label: "Lyrics" },
+  { id: "blog", label: "Blog" },
 ];
 
 const fadeBeyondLyrics: LyricLine[] = [
@@ -79,6 +82,7 @@ export const tracks: Track[] = [
     lyrics: fadeBeyondLyrics,
     vaultType: "unreleased-music",
     year: 2025,
+    category: "official",
   },
   {
     id: "endless-night",
@@ -101,6 +105,7 @@ export const tracks: Track[] = [
     ],
     vaultType: "demo",
     year: 2024,
+    category: "remix",
   },
   {
     id: "shining-light",
@@ -119,6 +124,7 @@ export const tracks: Track[] = [
     ],
     vaultType: "unreleased-music",
     year: 2025,
+    category: "cover",
   },
 ];
 

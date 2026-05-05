@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Video, Library, Disc3, Info, Send, Headphones, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/walker-logo.png";
 
 const nav = [
   { to: "/", label: "Home", icon: Home },
@@ -65,16 +66,18 @@ export function Sidebar() {
       <aside
         onMouseLeave={() => setOpen(false)}
         className={cn(
-          "fixed left-0 top-0 z-50 flex h-dvh w-72 shrink-0 flex-col gap-2 p-4 opacity-80",
+          "fixed left-0 top-0 z-50 flex h-dvh w-72 shrink-0 flex-col gap-2 p-4",
           "transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
-          mobileOpen ? "translate-x-0 opacity-100" : "-translate-x-full",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
           "md:translate-x-[-100%]",
           open && "md:translate-x-0",
         )}
       >
-        <div className="glass-strong mb-2 flex items-center justify-between gap-3 rounded-2xl p-5">
+        <div className="sidebar-panel mb-2 flex items-center justify-between gap-3 rounded-2xl p-4">
           <Link to="/" className="flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-lg bg-foreground/95 text-background font-bold">W</div>
+            <div className="grid size-11 place-items-center overflow-hidden rounded-xl bg-foreground/5 ring-1 ring-border">
+              <img src={logo} alt="Walker's Music World" className="size-9 object-contain" />
+            </div>
             <div className="leading-tight">
               <div className="text-sm font-bold tracking-tight">WALKER'S</div>
               <div className="text-[10px] tracking-[0.18em] text-muted-foreground">MUSIC WORLD</div>
@@ -89,7 +92,7 @@ export function Sidebar() {
           </button>
         </div>
 
-        <nav className="glass-strong flex-1 rounded-2xl p-3">
+        <nav className="sidebar-panel flex-1 rounded-2xl p-3">
           <ul className="space-y-1">
             {nav.map(({ to, label, icon: Icon }) => {
               const active = pathname === to;
@@ -113,7 +116,7 @@ export function Sidebar() {
           </ul>
         </nav>
 
-        <div className="glass-strong rounded-2xl p-4">
+        <div className="sidebar-panel rounded-2xl p-4">
           <div className="flex items-start gap-3">
             <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
               <Headphones className="size-5" />
