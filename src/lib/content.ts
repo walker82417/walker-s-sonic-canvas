@@ -1,35 +1,22 @@
 /**
  * Content loader for music and videos.
- *
- * - Music: dropped audio files in src/content/music/<category>/ are picked up
- *   automatically. Same-named .lrc and .jpg/.png are loaded if present.
- *   External links live in src/content/music/manifest.ts.
- * - Videos: live entirely in src/content/videos/manifest.ts.
+ * Music files dropped under src/content/music/<category>/ are auto-loaded.
+ * External links and video entries live in their manifest files.
  */
-import { tracks as sampleTracks, videos as sampleVideos, type Track, type Video } from "./data";
+import {
+  tracks as sampleTracks,
+  videos as sampleVideos,
+  type Track,
+  type Video,
+  type MusicCategory,
+  type VideoCategory,
+} from "./data";
 import { parseLyrics, type LyricLine } from "./lrc";
 import { musicManifest, type MusicManifestEntry } from "@/content/music/manifest";
 import { videoManifest, type VideoManifestEntry } from "@/content/videos/manifest";
 
-export type MusicCategory = "official" | "remix" | "cover";
-export type VideoCategory = "official" | "remix" | "cover" | "live" | "lyrics" | "blog";
+export type { MusicCategory, VideoCategory };
 
-export const MUSIC_CATEGORIES: { id: MusicCategory; label: string }[] = [
-  { id: "official", label: "Official" },
-  { id: "remix", label: "Remix" },
-  { id: "cover", label: "Covers" },
-];
-
-export const VIDEO_CATEGORY_LIST: { id: VideoCategory; label: string }[] = [
-  { id: "official", label: "Official" },
-  { id: "remix", label: "Remix" },
-  { id: "cover", label: "Covers" },
-  { id: "live", label: "Live" },
-  { id: "lyrics", label: "Lyrics" },
-  { id: "blog", label: "Blog" },
-];
-
-// Vite glob imports — resolve to URLs at build time.
 const audioFiles = import.meta.glob("/src/content/music/**/*.{mp3,m4a,wav,ogg}", {
   eager: true,
   query: "?url",
@@ -62,6 +49,7 @@ function siblingArt(audioPath: string, name: string): string | undefined {
     const k = `${dir}${name}.${ext}`;
     if (artFiles[k]) return artFiles[k];
   }
+  return undefined;
 }
 function siblingLyrics(audioPath: string, name: string): LyricLine[] {
   const dir = audioPath.replace(/[^/]+$/, "");
@@ -102,7 +90,7 @@ function manifestTracks(): Track[] {
     audioUrl: m.audioUrl,
     duration: m.duration ?? 0,
     quality: "Studio quality",
-    format: "Studio",
+    format: "Studio" as const,
     lyrics: m.lyrics ?? [],
     category: m.category,
   }));
