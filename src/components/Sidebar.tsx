@@ -55,7 +55,7 @@ export function Sidebar() {
         aria-hidden
       />
 
-      {/* Backdrop blur behind sidebar (mobile sheet AND desktop hover) */}
+      {/* Click-catcher behind sidebar (no page blur, just a tap-to-close layer) */}
       {(mobileOpen || open) && (
         <div
           onClick={() => {
@@ -63,8 +63,8 @@ export function Sidebar() {
             setOpen(false);
           }}
           className={cn(
-            "fixed inset-0 z-40 bg-background/40 backdrop-blur-md transition-opacity",
-            mobileOpen ? "" : "hidden md:block",
+            "fixed inset-0 z-40 transition-opacity",
+            mobileOpen ? "bg-background/30" : "hidden md:block",
           )}
         />
       )}
