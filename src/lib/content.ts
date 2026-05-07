@@ -12,7 +12,12 @@ import {
   type VideoCategory,
 } from "./data";
 import { parseLyrics, type LyricLine } from "./lrc";
-import { musicManifest, type MusicManifestEntry } from "@/content/music/manifest";
+import {
+  musicManifest,
+  githubSongs,
+  GITHUB_BASE,
+  type MusicManifestEntry,
+} from "@/content/music/manifest";
 import { videoManifest, type VideoManifestEntry } from "@/content/videos/manifest";
 
 export type { MusicCategory, VideoCategory };
