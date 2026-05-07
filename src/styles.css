@@ -113,8 +113,22 @@
   html, body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    background-image: var(--gradient-hero);
+  }
+  /* Site-wide background image layer (set via inline style in root) */
+  .site-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -10;
+    background-color: var(--color-background);
+    background-size: cover;
+    background-position: center;
     background-attachment: fixed;
+  }
+  .site-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, oklch(0.13 0.025 252 / 0.55), oklch(0.10 0.02 252 / 0.85));
   }
 }
 
@@ -133,10 +147,11 @@
   }
   /* Sidebar panels: ~80% transparent surface so background bleeds through,
      while text stays fully readable thanks to the heavy blur. */
+  /* Sidebar panel: more solid so text reads cleanly without blurring the page */
   .sidebar-panel {
-    background: oklch(0.16 0.03 252 / 0.2);
-    backdrop-filter: blur(36px) saturate(180%);
-    -webkit-backdrop-filter: blur(36px) saturate(180%);
+    background: oklch(0.14 0.025 252 / 0.82);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
     border: 1px solid oklch(1 0 0 / 0.08);
     box-shadow: 0 10px 40px -20px oklch(0 0 0 / 0.6);
   }
