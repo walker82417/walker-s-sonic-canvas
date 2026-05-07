@@ -64,16 +64,26 @@ function siblingLyrics(audioPath: string, name: string): LyricLine[] {
 
 const FALLBACK_ART = "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg";
 
+function parseNameAndArtist(raw: string): { title: string; artist: string } {
+  // Filenames may end with " - Artist Name" to credit the original owner.
+  // e.g. "Faded - Alan Walker" -> title "Faded", artist "Alan Walker"
+  const cleaned = raw.replace(/[_]+/g, " ").trim();
+  const m = cleaned.match(/^(.*?)[\s]+[-–—][\s]+(.+)$/);
+  if (m) return { title: m[1].trim(), artist: m[2].trim() };
+  return { title: cleaned, artist: "Walker's Music World" };
+}
+
 function fileTracks(): Track[] {
   const out: Track[] = [];
   for (const [path, url] of Object.entries(audioFiles)) {
     const cat = categoryOf(path);
     if (!cat) continue;
     const name = basename(path);
+    const { title, artist } = parseNameAndArtist(name);
     out.push({
       id: `${cat}-${name}`.toLowerCase().replace(/\s+/g, "-"),
-      title: name.replace(/[-_]+/g, " "),
-      artist: "Walker's Music World",
+      title,
+      artist,
       artwork: siblingArt(path, name) ?? FALLBACK_ART,
       audioUrl: url,
       duration: 0,
