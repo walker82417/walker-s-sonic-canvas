@@ -55,11 +55,17 @@ export function Sidebar() {
         aria-hidden
       />
 
-      {/* Backdrop (mobile only) */}
-      {mobileOpen && (
+      {/* Backdrop blur behind sidebar (mobile sheet AND desktop hover) */}
+      {(mobileOpen || open) && (
         <div
-          onClick={() => setMobileOpen(false)}
-          className="fixed inset-0 z-40 bg-background/70 backdrop-blur-md md:hidden"
+          onClick={() => {
+            setMobileOpen(false);
+            setOpen(false);
+          }}
+          className={cn(
+            "fixed inset-0 z-40 bg-background/40 backdrop-blur-md transition-opacity",
+            mobileOpen ? "" : "hidden md:block",
+          )}
         />
       )}
 

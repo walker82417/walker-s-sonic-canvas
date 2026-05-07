@@ -12,7 +12,12 @@ import {
   type VideoCategory,
 } from "./data";
 import { parseLyrics, type LyricLine } from "./lrc";
-import { musicManifest, type MusicManifestEntry } from "@/content/music/manifest";
+import {
+  musicManifest,
+  githubSongs,
+  GITHUB_BASE,
+  type MusicManifestEntry,
+} from "@/content/music/manifest";
 import { videoManifest, type VideoManifestEntry } from "@/content/videos/manifest";
 
 export type { MusicCategory, VideoCategory };
@@ -108,8 +113,31 @@ function manifestVideos(): Video[] {
   }));
 }
 
+function githubTracks(): Track[] {
+  if (!GITHUB_BASE || !githubSongs.length) return [];
+  const base = (GITHUB_BASE as string).replace(/\/$/, "");
+  return githubSongs.map((s) => {
+    const enc = encodeURIComponent(s.name);
+    const audioExt = s.audioExt ?? "mp3";
+    const artExt = s.artExt ?? "jpg";
+    return {
+      id: `gh-${s.name}`.toLowerCase().replace(/\s+/g, "-"),
+      title: s.name,
+      artist: "Walker's Music World",
+      artwork: `${base}/${enc}.${artExt}`,
+      audioUrl: `${base}/${enc}.${audioExt}`,
+      duration: 0,
+      quality: "Studio quality",
+      format: "Studio" as const,
+      lyrics: [],
+      category: s.category ?? "official",
+      lyricsUrl: s.hasLyrics ? `${base}/${enc}.lrc` : undefined,
+    } as Track & { lyricsUrl?: string };
+  });
+}
+
 export function loadAllTracks(): Track[] {
-  const merged = [...fileTracks(), ...manifestTracks()];
+  const merged = [...fileTracks(), ...githubTracks(), ...manifestTracks()];
   return merged.length ? merged : sampleTracks;
 }
 

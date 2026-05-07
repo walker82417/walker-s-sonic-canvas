@@ -77,7 +77,16 @@ function RootComponent() {
     <PlayerProvider tracks={loadAllTracks()}>
       <CopyrightNotice />
       <Outlet />
-      <MusicPlayer />
+      <GlobalMiniPlayer />
     </PlayerProvider>
   );
+}
+
+import { useRouterState } from "@tanstack/react-router";
+
+function GlobalMiniPlayer() {
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  // Don't render the bottom bar on the dedicated /player page (it has its own UI).
+  if (path === "/player") return null;
+  return <MusicPlayer />;
 }
