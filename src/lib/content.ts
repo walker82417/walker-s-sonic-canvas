@@ -130,10 +130,11 @@ function githubTracks(): Track[] {
     const enc = encodeURIComponent(s.name);
     const audioExt = s.audioExt ?? "mp3";
     const artExt = s.artExt ?? "jpg";
+    const { title, artist } = parseNameAndArtist(s.name);
     return {
       id: `gh-${s.name}`.toLowerCase().replace(/\s+/g, "-"),
-      title: s.name,
-      artist: "Walker's Music World",
+      title,
+      artist,
       artwork: `${base}/${enc}.${artExt}`,
       audioUrl: `${base}/${enc}.${audioExt}`,
       duration: 0,
