@@ -115,9 +115,9 @@ function manifestVideos(): Video[] {
 
 function githubTracks(): Track[] {
   if (!GITHUB_BASE || !githubSongs.length) return [];
-  const base = GITHUB_BASE.replace(/\/$/, "");
+  const base = (GITHUB_BASE as string).replace(/\/$/, "");
   return githubSongs.map((s) => {
-    const enc = encodeURIComponent(s.name).replace(/%20/g, "%20");
+    const enc = encodeURIComponent(s.name);
     const audioExt = s.audioExt ?? "mp3";
     const artExt = s.artExt ?? "jpg";
     return {
