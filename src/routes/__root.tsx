@@ -76,6 +76,7 @@ function RootComponent() {
 
   return (
     <PlayerProvider tracks={loadAllTracks()}>
+      <div className="site-bg" style={{ backgroundImage: `url(${bgImage})` }} aria-hidden />
       <CopyrightNotice />
       <Outlet />
       <GlobalMiniPlayer />
