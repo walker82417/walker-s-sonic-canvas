@@ -120,8 +120,40 @@ export function PlayerProvider({
     if (isPlaying) {
       audioRef.current.play().catch(() => setIsPlaying(false));
     }
+    // Media Session (lockscreen / notification controls, keeps audio alive in background)
+    if (typeof navigator !== "undefined" && "mediaSession" in navigator) {
+      try {
+        navigator.mediaSession.metadata = new window.MediaMetadata({
+          title: current.title,
+          artist: current.artist,
+          album: "Walker's Music World",
+          artwork: current.artwork
+            ? [
+                { src: current.artwork, sizes: "512x512", type: "image/jpeg" },
+                { src: current.artwork, sizes: "256x256", type: "image/jpeg" },
+              ]
+            : [],
+        });
+        navigator.mediaSession.setActionHandler("play", () => play());
+        navigator.mediaSession.setActionHandler("pause", () => pause());
+        navigator.mediaSession.setActionHandler("previoustrack", () => prev());
+        navigator.mediaSession.setActionHandler("nexttrack", () => next());
+        navigator.mediaSession.setActionHandler("seekto", (d) => {
+          if (typeof d.seekTime === "number") seek(d.seekTime);
+        });
+      } catch {
+        /* noop */
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
+
+  // Reflect playback state to OS
+  useEffect(() => {
+    if (typeof navigator !== "undefined" && "mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = isPlaying ? "playing" : "paused";
+    }
+  }, [isPlaying]);
 
   const value = useMemo<PlayerState>(
     () => ({
