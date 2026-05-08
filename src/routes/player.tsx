@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { formatTime } from "@/lib/lrc";
+import { CreditsButton } from "@/components/CreditsButton";
 import type { MusicCategory } from "@/lib/data";
 
 export const Route = createFileRoute("/player")({
