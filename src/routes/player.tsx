@@ -128,10 +128,18 @@ function Inner() {
                 const active = t.id === current.id;
                 return (
                   <li key={t.id}>
-                    <button
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => selectTrack(t.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          selectTrack(t.id);
+                        }
+                      }}
                       className={cn(
-                        "group flex w-full items-center gap-3 px-3 py-3 text-left transition hover:bg-foreground/5",
+                        "group flex w-full cursor-pointer items-center gap-3 px-3 py-3 text-left transition hover:bg-foreground/5",
                         active && "bg-foreground/5",
                       )}
                     >
@@ -158,17 +166,16 @@ function Inner() {
                       <span className="hidden text-xs tabular-nums text-muted-foreground sm:block">
                         {t.duration ? formatTime(t.duration) : "—"}
                       </span>
-                      <div onClick={(e) => e.stopPropagation()} className="ml-2 hidden sm:block">
+                      <div className="ml-2 hidden sm:block">
                         <CreditsButton
                           title={t.title}
                           artist={t.artist}
                           credits={t.credits}
                           compact
-                          label="Credits"
                         />
                       </div>
                       <Heart className="ml-2 size-4 shrink-0 text-muted-foreground opacity-0 transition group-hover:opacity-100" />
-                    </button>
+                    </div>
                   </li>
                 );
               })}
