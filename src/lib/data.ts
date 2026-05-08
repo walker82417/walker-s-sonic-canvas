@@ -20,6 +20,7 @@ export interface Track {
   vaultType?: VaultType;
   year?: number;
   category?: MusicCategory;
+  credits?: string;
 }
 
 export interface Video {

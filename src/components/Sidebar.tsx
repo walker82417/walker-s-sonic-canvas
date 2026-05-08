@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Video, Library, Disc3, Info, Send, Headphones, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/walker-logo.png";
 
 const nav = [
   { to: "/", label: "Home", icon: Home },
@@ -81,8 +80,8 @@ export function Sidebar() {
       >
         <div className="sidebar-panel mb-2 flex items-center justify-between gap-3 rounded-2xl p-4">
           <Link to="/" className="flex items-center gap-3">
-            <div className="grid size-11 place-items-center overflow-hidden rounded-xl bg-foreground/5 ring-1 ring-border">
-              <img src={logo} alt="Walker's Music World" className="size-9 object-contain" />
+            <div className="grid size-11 place-items-center rounded-xl bg-gradient-to-br from-primary/30 to-accent/30 ring-1 ring-border">
+              <span className="text-base font-black tracking-tighter">W</span>
             </div>
             <div className="leading-tight">
               <div className="text-sm font-bold tracking-tight">WALKER'S</div>

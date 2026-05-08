@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { formatTime } from "@/lib/lrc";
+import { CreditsButton } from "@/components/CreditsButton";
 import type { MusicCategory } from "@/lib/data";
 
 export const Route = createFileRoute("/player")({
@@ -127,10 +128,18 @@ function Inner() {
                 const active = t.id === current.id;
                 return (
                   <li key={t.id}>
-                    <button
+                    <div
+                      role="button"
+                      tabIndex={0}
                       onClick={() => selectTrack(t.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          selectTrack(t.id);
+                        }
+                      }}
                       className={cn(
-                        "group flex w-full items-center gap-3 px-3 py-3 text-left transition hover:bg-foreground/5",
+                        "group flex w-full cursor-pointer items-center gap-3 px-3 py-3 text-left transition hover:bg-foreground/5",
                         active && "bg-foreground/5",
                       )}
                     >
@@ -157,8 +166,16 @@ function Inner() {
                       <span className="hidden text-xs tabular-nums text-muted-foreground sm:block">
                         {t.duration ? formatTime(t.duration) : "—"}
                       </span>
+                      <div className="ml-2 hidden sm:block">
+                        <CreditsButton
+                          title={t.title}
+                          artist={t.artist}
+                          credits={t.credits}
+                          compact
+                        />
+                      </div>
                       <Heart className="ml-2 size-4 shrink-0 text-muted-foreground opacity-0 transition group-hover:opacity-100" />
-                    </button>
+                    </div>
                   </li>
                 );
               })}
@@ -174,6 +191,13 @@ function Inner() {
           <div>
             <h2 className="truncate text-xl font-bold tracking-tight">{current.title}</h2>
             <p className="truncate text-sm text-muted-foreground">{current.artist}</p>
+            <div className="mt-2">
+              <CreditsButton
+                title={current.title}
+                artist={current.artist}
+                credits={current.credits}
+              />
+            </div>
           </div>
 
           {/* Seek */}

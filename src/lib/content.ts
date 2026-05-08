@@ -80,6 +80,7 @@ function fileTracks(): Track[] {
     if (!cat) continue;
     const name = basename(path);
     const { title, artist } = parseNameAndArtist(name);
+    const credited = artist !== "Walker's Music World";
     out.push({
       id: `${cat}-${name}`.toLowerCase().replace(/\s+/g, "-"),
       title,
@@ -91,6 +92,9 @@ function fileTracks(): Track[] {
       format: "Studio",
       lyrics: siblingLyrics(path, name),
       category: cat,
+      credits: credited
+        ? `Original by ${artist}. All rights reserved to the respective owners.`
+        : undefined,
     });
   }
   return out;
@@ -100,7 +104,7 @@ function manifestTracks(): Track[] {
   return musicManifest.map((m: MusicManifestEntry) => ({
     id: m.id,
     title: m.title,
-    artist: "Walker's Music World",
+    artist: m.artist ?? "Walker's Music World",
     artwork: m.artwork ?? FALLBACK_ART,
     audioUrl: m.audioUrl,
     duration: m.duration ?? 0,
@@ -108,6 +112,7 @@ function manifestTracks(): Track[] {
     format: "Studio" as const,
     lyrics: m.lyrics ?? [],
     category: m.category,
+    credits: m.credits,
   }));
 }
 

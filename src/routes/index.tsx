@@ -4,7 +4,6 @@ import { Play, Bell, ArrowRight, Disc3, Library, Send, Youtube, Instagram, Mail 
 import { AppLayout } from "@/components/AppLayout";
 import { SOCIAL } from "@/lib/data";
 import { loadAllVideos } from "@/lib/content";
-import logo from "@/assets/walker-logo.png";
 import heroBg from "@/assets/hero-bg.jpg";
 
 export const Route = createFileRoute("/")({
@@ -33,19 +32,11 @@ function Index() {
 
         <div className="relative grid min-h-[88vh] place-items-center px-6 py-20 text-center">
           <div className="flex max-w-3xl flex-col items-center">
-            <motion.img
-              initial={{ opacity: 0, scale: 0.9, y: 8 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
-              src={logo}
-              alt="Walker's Music World"
-              className="size-28 object-contain drop-shadow-[0_0_30px_rgba(120,160,255,0.45)] md:size-36"
-            />
             <motion.span
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15 }}
-              className="mt-8 inline-flex items-center gap-2 rounded-full border border-border bg-foreground/5 px-4 py-1.5 text-[11px] tracking-[0.25em] text-muted-foreground backdrop-blur"
+              transition={{ delay: 0.05 }}
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-foreground/5 px-4 py-1.5 text-[11px] tracking-[0.25em] text-muted-foreground backdrop-blur"
             >
               YOUTUBE · WALKER'S MUSIC WORLD
             </motion.span>

@@ -6,7 +6,6 @@ import { MusicPlayer } from "@/components/player/MusicPlayer";
 import { CopyrightNotice } from "@/components/CopyrightNotice";
 import { useEffect } from "react";
 import { loadAllTracks } from "@/lib/content";
-import bgImage from "@/assets/walker-bg.webp";
 
 function NotFoundComponent() {
   return (
@@ -76,7 +75,7 @@ function RootComponent() {
 
   return (
     <PlayerProvider tracks={loadAllTracks()}>
-      <div className="site-bg" style={{ backgroundImage: `url(${bgImage})` }} aria-hidden />
+      <div className="site-bg" aria-hidden />
       <CopyrightNotice />
       <Outlet />
       <GlobalMiniPlayer />
