@@ -13,6 +13,8 @@ export interface MusicManifestEntry {
   category: MusicCategory;
   audioUrl: string;
   artwork?: string;
+  /** Filename (without extension) of an image inside src/content/music/<category>/ */
+  artworkName?: string;
   artist?: string;       // original credit owner
   credits?: string;      // longer credit string
   duration?: number;
@@ -26,6 +28,7 @@ export const musicManifest: MusicManifestEntry[] = [
     category: "remix",
     audioUrl:
       "https://res.cloudinary.com/dxfyuokaf/video/upload/v1778245886/Alan_Walker_-_Diamond_Heart_feat._Sophia_Somajo_Syn_Cole_Remix_-_Alan_Walker_gedsxj.mp3",
+    artworkName: "Diamond Heat Feat. Sophia_Alan walker & syn cole remix",
     artist: "Alan Walker & Syn Cole (Remix)",
     credits:
       "Diamond Heart (feat. Sophia Somajo) — Syn Cole Remix. Original by Alan Walker. All rights reserved to the respective owners.",
@@ -36,6 +39,7 @@ export const musicManifest: MusicManifestEntry[] = [
     category: "remix",
     audioUrl:
       "https://res.cloudinary.com/dxfyuokaf/video/upload/v1778245904/Alan_Walker_-_Different_World_NIVIRO_Remix_-_NIVIRO_z279ko.mp3",
+    artworkName: "Different World NIVIRO remix_Alan Walker& NIVIRO",
     artist: "Alan Walker & NIVIRO",
     credits:
       "Different World (NIVIRO Remix). Original by Alan Walker. All rights reserved to the respective owners.",
@@ -46,6 +50,7 @@ export const musicManifest: MusicManifestEntry[] = [
     category: "remix",
     audioUrl:
       "https://res.cloudinary.com/dxfyuokaf/video/upload/v1778245911/Alan_Walker_-_Fade_Marnik_Blazars_Remix_Alan_Walker_-_intro_-_E-Sounds_pu4x31.mp3",
+    artworkName: "Fade (Marnik & Blazars Remix)",
     artist: "Alan Walker, Marnik, Blazars & E-Sounds",
     credits:
       "Fade (Marnik & Blazars Remix) with Alan Walker intro by E-Sounds. All rights reserved to the respective owners.",
