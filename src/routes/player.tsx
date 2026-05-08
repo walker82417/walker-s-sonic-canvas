@@ -158,6 +158,15 @@ function Inner() {
                       <span className="hidden text-xs tabular-nums text-muted-foreground sm:block">
                         {t.duration ? formatTime(t.duration) : "—"}
                       </span>
+                      <div onClick={(e) => e.stopPropagation()} className="ml-2 hidden sm:block">
+                        <CreditsButton
+                          title={t.title}
+                          artist={t.artist}
+                          credits={t.credits}
+                          compact
+                          label="Credits"
+                        />
+                      </div>
                       <Heart className="ml-2 size-4 shrink-0 text-muted-foreground opacity-0 transition group-hover:opacity-100" />
                     </button>
                   </li>
