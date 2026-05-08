@@ -19,6 +19,7 @@ import {
   type MusicManifestEntry,
 } from "@/content/music/manifest";
 import { videoManifest, type VideoManifestEntry } from "@/content/videos/manifest";
+import fallbackArt from "@/assets/album-fade-beyond.jpg";
 
 export type { MusicCategory, VideoCategory };
 
@@ -62,7 +63,7 @@ function siblingLyrics(audioPath: string, name: string): LyricLine[] {
   return lrcFiles[k] ? parseLyrics(lrcFiles[k]) : [];
 }
 
-const FALLBACK_ART = "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg";
+const FALLBACK_ART = fallbackArt;
 
 function parseNameAndArtist(raw: string): { title: string; artist: string } {
   // Filenames may end with " - Artist Name" to credit the original owner.
@@ -100,12 +101,26 @@ function fileTracks(): Track[] {
   return out;
 }
 
+function findArtworkByName(name: string): string | undefined {
+  const exts = ["jpg", "jpeg", "png", "webp"];
+  for (const k of Object.keys(artFiles)) {
+    const file = k.split("/").pop() ?? "";
+    for (const ext of exts) {
+      if (file.toLowerCase() === `${name.toLowerCase()}.${ext}`) return artFiles[k];
+    }
+  }
+  return undefined;
+}
+
 function manifestTracks(): Track[] {
   return musicManifest.map((m: MusicManifestEntry) => ({
     id: m.id,
     title: m.title,
     artist: m.artist ?? "Walker's Music World",
-    artwork: m.artwork ?? FALLBACK_ART,
+    artwork:
+      m.artwork ??
+      (m.artworkName ? findArtworkByName(m.artworkName) : undefined) ??
+      FALLBACK_ART,
     audioUrl: m.audioUrl,
     duration: m.duration ?? 0,
     quality: "Studio quality",
