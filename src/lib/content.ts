@@ -19,6 +19,7 @@ import {
   type MusicManifestEntry,
 } from "@/content/music/manifest";
 import { videoManifest, type VideoManifestEntry } from "@/content/videos/manifest";
+import fallbackArt from "@/assets/album-fade-beyond.jpg";
 
 export type { MusicCategory, VideoCategory };
 
@@ -62,7 +63,6 @@ function siblingLyrics(audioPath: string, name: string): LyricLine[] {
   return lrcFiles[k] ? parseLyrics(lrcFiles[k]) : [];
 }
 
-import fallbackArt from "@/assets/album-fade-beyond.jpg";
 const FALLBACK_ART = fallbackArt;
 
 function parseNameAndArtist(raw: string): { title: string; artist: string } {
