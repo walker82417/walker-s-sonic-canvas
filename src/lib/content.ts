@@ -80,6 +80,7 @@ function fileTracks(): Track[] {
     if (!cat) continue;
     const name = basename(path);
     const { title, artist } = parseNameAndArtist(name);
+    const credited = artist !== "Walker's Music World";
     out.push({
       id: `${cat}-${name}`.toLowerCase().replace(/\s+/g, "-"),
       title,
@@ -91,6 +92,9 @@ function fileTracks(): Track[] {
       format: "Studio",
       lyrics: siblingLyrics(path, name),
       category: cat,
+      credits: credited
+        ? `Original by ${artist}. All rights reserved to the respective owners.`
+        : undefined,
     });
   }
   return out;
