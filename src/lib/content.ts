@@ -62,7 +62,8 @@ function siblingLyrics(audioPath: string, name: string): LyricLine[] {
   return lrcFiles[k] ? parseLyrics(lrcFiles[k]) : [];
 }
 
-const FALLBACK_ART = "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg";
+import fallbackArt from "@/assets/album-fade-beyond.jpg";
+const FALLBACK_ART = fallbackArt;
 
 function parseNameAndArtist(raw: string): { title: string; artist: string } {
   // Filenames may end with " - Artist Name" to credit the original owner.
