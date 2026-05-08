@@ -4,7 +4,6 @@ import { Play, Bell, ArrowRight, Disc3, Library, Send, Youtube, Instagram, Mail 
 import { AppLayout } from "@/components/AppLayout";
 import { SOCIAL } from "@/lib/data";
 import { loadAllVideos } from "@/lib/content";
-import logo from "@/assets/walker-logo.png";
 import heroBg from "@/assets/hero-bg.jpg";
 
 export const Route = createFileRoute("/")({
