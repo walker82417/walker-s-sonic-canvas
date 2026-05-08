@@ -284,6 +284,7 @@ export function MusicPlayer() {
                   >
                     <Mic2 className="size-3.5" /> Lyrics
                   </button>
+                  <CreditsButton title={current.title} artist={current.artist} credits={current.credits} />
                   <button onClick={toggleMute} className="text-muted-foreground hover:text-foreground" aria-label={muted ? "Unmute" : "Mute"}>
                     {muted || effVolume === 0 ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
                   </button>
