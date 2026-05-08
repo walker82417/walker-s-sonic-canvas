@@ -175,6 +175,13 @@ function Inner() {
           <div>
             <h2 className="truncate text-xl font-bold tracking-tight">{current.title}</h2>
             <p className="truncate text-sm text-muted-foreground">{current.artist}</p>
+            <div className="mt-2">
+              <CreditsButton
+                title={current.title}
+                artist={current.artist}
+                credits={current.credits}
+              />
+            </div>
           </div>
 
           {/* Seek */}
