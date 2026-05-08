@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Home, Video, Library, Disc3, Info, Send, Headphones, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logo from "@/assets/walker-logo.png";
 
 const nav = [
   { to: "/", label: "Home", icon: Home },
