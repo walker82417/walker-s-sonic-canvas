@@ -1,14 +1,9 @@
 // External / linked audio. Two ways to add songs:
 //
-// 1) `githubSongs` — easiest. Set GITHUB_BASE once, then list each track by
-//    name. The loader builds the audio + thumbnail URLs for you. The audio
-//    file extension is auto-detected (mp3/m4a/wav/flac/ogg) and the
-//    thumbnail extension is auto-detected (jpg/jpeg/png/webp).
+// 1) `githubSongs` — set GITHUB_BASE once, then list each track by name. The
+//    loader builds the audio + thumbnail URLs for you.
 //
-// 2) `musicManifest` — full control. Provide explicit URLs.
-//
-// Either way, drop a `<name>.lrc` lyrics file in your repo and reference its
-// URL via `lyricsUrl` in githubSongs to get synced lyrics.
+// 2) `musicManifest` — full control. Provide explicit URLs and credits.
 
 import type { MusicCategory } from "@/lib/content";
 
@@ -18,33 +13,54 @@ export interface MusicManifestEntry {
   category: MusicCategory;
   audioUrl: string;
   artwork?: string;
+  artist?: string;       // original credit owner
+  credits?: string;      // longer credit string
   duration?: number;
   lyrics?: { time: number; text: string }[];
 }
 
-export const musicManifest: MusicManifestEntry[] = [];
+export const musicManifest: MusicManifestEntry[] = [
+  {
+    id: "remix-diamond-heart-syn-cole",
+    title: "Diamond Heart (feat. Sophia Somajo)",
+    category: "remix",
+    audioUrl:
+      "https://res.cloudinary.com/dxfyuokaf/video/upload/v1778245886/Alan_Walker_-_Diamond_Heart_feat._Sophia_Somajo_Syn_Cole_Remix_-_Alan_Walker_gedsxj.mp3",
+    artist: "Alan Walker & Syn Cole (Remix)",
+    credits:
+      "Diamond Heart (feat. Sophia Somajo) — Syn Cole Remix. Original by Alan Walker. All rights reserved to the respective owners.",
+  },
+  {
+    id: "remix-different-world-niviro",
+    title: "Different World (NIVIRO Remix)",
+    category: "remix",
+    audioUrl:
+      "https://res.cloudinary.com/dxfyuokaf/video/upload/v1778245904/Alan_Walker_-_Different_World_NIVIRO_Remix_-_NIVIRO_z279ko.mp3",
+    artist: "Alan Walker & NIVIRO",
+    credits:
+      "Different World (NIVIRO Remix). Original by Alan Walker. All rights reserved to the respective owners.",
+  },
+  {
+    id: "remix-fade-marnik-blazars",
+    title: "Fade (Marnik & Blazars Remix)",
+    category: "remix",
+    audioUrl:
+      "https://res.cloudinary.com/dxfyuokaf/video/upload/v1778245911/Alan_Walker_-_Fade_Marnik_Blazars_Remix_Alan_Walker_-_intro_-_E-Sounds_pu4x31.mp3",
+    artist: "Alan Walker, Marnik, Blazars & E-Sounds",
+    credits:
+      "Fade (Marnik & Blazars Remix) with Alan Walker intro by E-Sounds. All rights reserved to the respective owners.",
+  },
+];
 
 // ---- Simple GitHub-hosted songs ---------------------------------------------
-//
-// Set this to your raw GitHub base, e.g.
-//   "https://raw.githubusercontent.com/<user>/<repo>/main/songs"
-// Folder layout in your repo (recommended):
-//   songs/
-//     <Song Name>.mp3
-//     <Song Name>.jpg     (thumbnail, same name as the song)
-//     <Song Name>.lrc     (optional lyrics)
 export const GITHUB_BASE = "";
 
 export interface GithubSong {
-  name: string;                  // file basename without extension, also the display title
-  category?: MusicCategory;      // defaults to "official"
-  audioExt?: string;             // override extension if not mp3
-  artExt?: string;               // override thumbnail extension if not jpg
-  hasLyrics?: boolean;           // looks for <name>.lrc in the same folder
+  name: string;
+  category?: MusicCategory;
+  audioExt?: string;
+  artExt?: string;
+  hasLyrics?: boolean;
 }
 
-export const githubSongs: GithubSong[] = [
-  // Example after you set GITHUB_BASE above:
-  // { name: "Faded Walker Cover", hasLyrics: true },
-  // { name: "Alone Acoustic", category: "cover", audioExt: "m4a" },
-];
+export const githubSongs: GithubSong[] = [];
