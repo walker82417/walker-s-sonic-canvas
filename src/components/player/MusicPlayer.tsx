@@ -22,6 +22,7 @@ import { usePlayer } from "./PlayerContext";
 import { LyricsSync } from "./LyricsSync";
 import { formatTime } from "@/lib/lrc";
 import { cn } from "@/lib/utils";
+import { CreditsButton } from "@/components/CreditsButton";
 
 export function MusicPlayer() {
   const {
