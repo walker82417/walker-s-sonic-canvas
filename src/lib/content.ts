@@ -100,7 +100,7 @@ function manifestTracks(): Track[] {
   return musicManifest.map((m: MusicManifestEntry) => ({
     id: m.id,
     title: m.title,
-    artist: "Walker's Music World",
+    artist: m.artist ?? "Walker's Music World",
     artwork: m.artwork ?? FALLBACK_ART,
     audioUrl: m.audioUrl,
     duration: m.duration ?? 0,
@@ -108,6 +108,7 @@ function manifestTracks(): Track[] {
     format: "Studio" as const,
     lyrics: m.lyrics ?? [],
     category: m.category,
+    credits: m.credits,
   }));
 }
 
