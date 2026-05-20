@@ -1,7 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Play, Bell, ArrowRight, Disc3, Library, Send, Youtube, Instagram, Mail } from "lucide-react";
+import {
+  Play,
+  Bell,
+  ArrowRight,
+  Disc3,
+  Library,
+  Send,
+  Youtube,
+  Instagram,
+  Mail,
+  CalendarDays,
+  Ticket,
+  Radio,
+} from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
+import { SmartVideoThumbnail } from "@/components/SmartVideoThumbnail";
 import { SOCIAL } from "@/lib/data";
 import { loadAllVideos } from "@/lib/content";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -18,6 +32,27 @@ export const Route = createFileRoute("/")({
   }),
 });
 
+const releaseTimeline = [
+  {
+    type: "Music",
+    title: "Upcoming music release",
+    status: "TBA",
+    detail: "New audio drops will be listed here when the release plan is ready.",
+  },
+  {
+    type: "YouTube",
+    title: "Upcoming video premiere",
+    status: "TBA",
+    detail: "Premiere links will point directly to YouTube once confirmed.",
+  },
+  {
+    type: "Walker Vault",
+    title: "Upcoming vault drop",
+    status: "TBA",
+    detail: "Vault music, unreleased edits, and behind-the-scenes updates will appear here.",
+  },
+];
+
 function Index() {
   const videos = loadAllVideos();
   const featured = videos.slice(0, 6);
@@ -28,7 +63,6 @@ function Index() {
       <section className="relative isolate mx-3 my-3 overflow-hidden rounded-3xl md:mx-4 md:my-4">
         <img src={heroBg} alt="" className="absolute inset-0 size-full object-cover opacity-50" width={1920} height={1080} />
         <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
-        <div className="absolute -top-32 left-1/2 size-[640px] -translate-x-1/2 rounded-full bg-primary/20 blur-3xl" />
 
         <div className="relative grid min-h-[88vh] place-items-center px-6 py-20 text-center">
           <div className="flex max-w-3xl flex-col items-center">
@@ -113,7 +147,13 @@ function Index() {
               className="group overflow-hidden rounded-2xl glass shadow-elevated transition hover:-translate-y-1 hover:shadow-glow"
             >
               <div className="relative aspect-video bg-black">
-                <img src={v.thumbnail} alt={v.title} loading="lazy" className="size-full object-cover transition group-hover:scale-105" />
+                <SmartVideoThumbnail
+                  src={v.thumbnail}
+                  youtubeId={v.youtubeId}
+                  alt={v.title}
+                  loading="lazy"
+                  className="transition group-hover:scale-105"
+                />
                 <span className="absolute inset-0 grid place-items-center bg-black/30 opacity-0 transition group-hover:opacity-100">
                   <span className="grid size-14 place-items-center rounded-full bg-foreground/90 text-background shadow-glow">
                     <Play className="size-6 fill-current pl-0.5" />
@@ -134,6 +174,67 @@ function Index() {
         </div>
       </section>
 
+      {/* RELEASE TIMELINE */}
+      <section className="mx-3 mt-14 md:mx-4">
+        <div className="mb-5 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Release timeline</p>
+            <h2 className="mt-1 text-2xl font-bold tracking-tight md:text-3xl">Coming Next</h2>
+          </div>
+          <p className="max-w-xl text-sm text-muted-foreground">
+            Music, YouTube premieres, and Walker Vault drops will stay in one clear sequence here.
+          </p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {releaseTimeline.map((item) => (
+            <article key={item.type} className="glass rounded-2xl p-5 shadow-elevated">
+              <div className="flex items-center justify-between gap-3">
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary/15 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary">
+                  <Radio className="size-3.5" /> {item.type}
+                </span>
+                <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{item.status}</span>
+              </div>
+              <h3 className="mt-5 text-lg font-bold tracking-tight">{item.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.detail}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* LIVE SHOWS */}
+      <section className="mx-3 mt-14 md:mx-4">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,420px)]">
+          <div className="glass rounded-2xl p-6 shadow-elevated md:p-8">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Live shows</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">Alan Walker Upcoming Shows</h2>
+            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
+              Ticket buttons will redirect to World of Walker, Alan Walker's official tour page, or the respective event website.
+              We do not collect, store, or process ticket, payment, or booking data here.
+            </p>
+            <a
+              href="https://www.alanwalker.com/tour/"
+              target="_blank"
+              rel="noreferrer"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background shadow-glow transition hover:scale-[1.03]"
+            >
+              <Ticket className="size-4" /> Official tour dates
+            </a>
+          </div>
+          <div className="glass flex flex-col justify-between rounded-2xl p-6 shadow-elevated">
+            <div className="grid size-12 place-items-center rounded-xl bg-primary/15 text-primary">
+              <CalendarDays className="size-6" />
+            </div>
+            <div className="mt-8">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Schedule status</p>
+              <h3 className="mt-2 text-xl font-bold tracking-tight">Awaiting confirmed dates</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                City, venue, and ticket partner details will be added only after the official information is confirmed.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* EXPLORE TILES */}
       <section className="mx-3 mt-14 md:mx-4">
         <h2 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Explore the world</h2>
@@ -148,7 +249,6 @@ function Index() {
       {/* COMMUNITY CALL */}
       <section className="mx-3 mt-14 md:mx-4">
         <div className="glass relative overflow-hidden rounded-3xl p-8 md:p-12">
-          <div className="absolute -right-20 -top-20 size-72 rounded-full bg-accent/20 blur-3xl" />
           <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">The Walker family</p>
           <h2 className="mt-2 max-w-2xl text-3xl font-bold tracking-tight md:text-4xl">
             Help us reach the next milestone, 50K Walkers strong.

@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, X } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { VIDEO_CATEGORIES, type Video, type VideoCategory } from "@/lib/data";
 import { loadAllVideos } from "@/lib/content";
 import { cn } from "@/lib/utils";
+import { usePlayer } from "@/components/player/PlayerContext";
+import { SmartVideoThumbnail } from "@/components/SmartVideoThumbnail";
 
 export const Route = createFileRoute("/videos")({
   component: VideosPage,
@@ -21,11 +23,15 @@ function VideosPage() {
   const allVideos = loadAllVideos();
   const [filter, setFilter] = useState<VideoCategory | "all">("all");
   const [active, setActive] = useState<Video | null>(null);
+  const { pauseForExternalVideo, resumeAfterExternalVideo } = usePlayer();
+  const activeEmbedUrl = active?.embedUrl ?? (active?.youtubeId ? `https://www.youtube-nocookie.com/embed/${active.youtubeId}?autoplay=1&rel=0&enablejsapi=1` : "");
 
   const filtered = useMemo(
     () => (filter === "all" ? allVideos : allVideos.filter((v) => v.category === filter)),
     [filter, allVideos],
   );
+
+  useVideoAudioHandoff(Boolean(active), () => setActive(null), pauseForExternalVideo, resumeAfterExternalVideo);
 
   return (
     <AppLayout>
@@ -67,8 +73,8 @@ function VideosPage() {
               </div>
               <div className="aspect-video w-full bg-black">
                 <iframe
-                  key={active.youtubeId}
-                  src={`https://www.youtube-nocookie.com/embed/${active.youtubeId}?autoplay=1&rel=0`}
+                  key={active.youtubeId ?? active.embedUrl}
+                  src={activeEmbedUrl}
                   title={active.title}
                   allow="autoplay; encrypted-media; picture-in-picture"
                   allowFullScreen
@@ -109,11 +115,12 @@ function VideosPage() {
               )}
             >
               <div className="relative aspect-video bg-black">
-                <img
+                <SmartVideoThumbnail
                   src={v.thumbnail}
+                  youtubeId={v.youtubeId}
                   alt={v.title}
                   loading="lazy"
-                  className="size-full object-cover transition group-hover:scale-105"
+                  className="transition group-hover:scale-105"
                 />
                 <span className="absolute inset-0 grid place-items-center bg-black/30 opacity-0 transition group-hover:opacity-100">
                   <span className="grid size-14 place-items-center rounded-full bg-foreground/90 text-background shadow-glow">
@@ -142,6 +149,39 @@ function VideosPage() {
       </div>
     </AppLayout>
   );
+}
+
+function useVideoAudioHandoff(
+  active: boolean,
+  onVideoStop: () => void,
+  pauseForExternalVideo: () => void,
+  resumeAfterExternalVideo: () => void,
+) {
+  useEffect(() => {
+    if (!active) return;
+    pauseForExternalVideo();
+    return () => resumeAfterExternalVideo();
+  }, [active, pauseForExternalVideo, resumeAfterExternalVideo]);
+
+  useEffect(() => {
+    if (!active) return;
+    const onMessage = (event: MessageEvent) => {
+      if (!String(event.origin).includes("youtube")) return;
+      const data = typeof event.data === "string" ? safeJson(event.data) : event.data;
+      const state = data?.info?.playerState;
+      if (state === 0 || state === 2) onVideoStop();
+    };
+    window.addEventListener("message", onMessage);
+    return () => window.removeEventListener("message", onMessage);
+  }, [active, onVideoStop]);
+}
+
+function safeJson(raw: string) {
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
 }
 
 function Chip({ active, onClick, children }: { active: boolean; onClick: () => void; children: React.ReactNode }) {

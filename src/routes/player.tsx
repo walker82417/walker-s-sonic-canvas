@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AppLayout } from "@/components/AppLayout";
 import { LyricsSync } from "@/components/player/LyricsSync";
 import { usePlayer } from "@/components/player/PlayerContext";
@@ -9,6 +9,9 @@ import {
   Pause,
   SkipBack,
   SkipForward,
+  Shuffle,
+  Repeat,
+  Repeat1,
   Volume2,
   VolumeX,
   Search,
@@ -50,7 +53,11 @@ function Inner() {
   const {
     tracks,
     current,
+    queue,
+    upNext,
     isPlaying,
+    shuffle,
+    repeatMode,
     currentTime,
     duration,
     buffered,
@@ -61,6 +68,8 @@ function Inner() {
     toggle,
     next,
     prev,
+    toggleShuffle,
+    toggleRepeat,
     setVolume,
     toggleMute,
   } = usePlayer();
@@ -72,6 +81,7 @@ function Inner() {
   const filtered = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return tracks.filter((t) => {
+      if (t.vaultType) return false;
       if (cat !== "all" && t.category !== cat) return false;
       if (!needle) return true;
       return t.title.toLowerCase().includes(needle) || t.artist.toLowerCase().includes(needle);
@@ -80,6 +90,9 @@ function Inner() {
 
   const totalDuration = duration || current.duration || 0;
   const effVolume = muted ? 0 : volume;
+  const repeatLabel =
+    repeatMode === "one" ? "Repeat one" : repeatMode === "all" ? "Repeat all" : "Repeat off";
+  const RepeatIcon = repeatMode === "one" ? Repeat1 : Repeat;
 
   return (
     <div className="px-4 py-6 md:px-10 md:py-10">
@@ -154,7 +167,7 @@ function Inner() {
                           i + 1
                         )}
                       </div>
-                      <img src={t.artwork} alt="" loading="lazy" className="size-11 shrink-0 rounded-md object-cover" />
+                      <img src={t.artwork} alt="" loading="lazy" className="size-11 shrink-0 rounded-md bg-black/40 object-contain" />
                       <div className="min-w-0 flex-1">
                         <div className={cn("truncate text-sm font-semibold", active && "text-primary")}>
                           {t.title}
@@ -186,7 +199,7 @@ function Inner() {
         {/* Now playing column */}
         <aside className="player-surface ring-soft sticky top-4 flex max-h-[calc(100dvh-2rem)] flex-col gap-4 self-start rounded-3xl p-5">
           <div className="overflow-hidden rounded-2xl shadow-elevated">
-            <img src={current.artwork} alt={current.title} className="aspect-square w-full object-cover" />
+            <img src={current.artwork} alt={current.title} className="aspect-square w-full bg-black/40 object-contain" />
           </div>
           <div>
             <h2 className="truncate text-xl font-bold tracking-tight">{current.title}</h2>
@@ -206,11 +219,11 @@ function Inner() {
               <div className="pointer-events-none absolute inset-x-0 top-1/2 h-1 -translate-y-1/2 overflow-hidden rounded-full bg-foreground/10">
                 <div className="h-full bg-foreground/15" style={{ width: `${buffered * 100}%` }} />
               </div>
-              <Slider
+              <SeekSlider
                 value={[currentTime]}
                 max={Math.max(totalDuration, 0.001)}
                 step={0.1}
-                onValueChange={([v]) => seek(v)}
+                onValueCommit={([v]) => seek(v)}
                 className="relative z-10"
               />
             </div>
@@ -222,6 +235,14 @@ function Inner() {
 
           {/* Transport */}
           <div className="flex items-center justify-center gap-5">
+            <button
+              onClick={toggleShuffle}
+              className={cn("text-muted-foreground hover:text-foreground", shuffle && "text-primary hover:text-primary")}
+              aria-label="Shuffle"
+              aria-pressed={shuffle}
+            >
+              <Shuffle className="size-5" />
+            </button>
             <button onClick={prev} className="text-muted-foreground hover:text-foreground" aria-label="Previous">
               <SkipBack className="size-5" />
             </button>
@@ -234,6 +255,14 @@ function Inner() {
             </button>
             <button onClick={next} className="text-muted-foreground hover:text-foreground" aria-label="Next">
               <SkipForward className="size-5" />
+            </button>
+            <button
+              onClick={toggleRepeat}
+              className={cn("text-muted-foreground hover:text-foreground", repeatMode !== "off" && "text-primary hover:text-primary")}
+              aria-label={repeatLabel}
+              aria-pressed={repeatMode !== "off"}
+            >
+              <RepeatIcon className="size-5" />
             </button>
           </div>
 
@@ -263,22 +292,42 @@ function Inner() {
             {tab === "lyrics" ? (
               <LyricsSync lyrics={current.lyrics} currentTime={currentTime} onSeek={seek} />
             ) : (
-              <ul className="space-y-1 overflow-auto pr-1 text-sm">
-                {tracks
-                  .filter((t) => t.id !== current.id)
-                  .slice(0, 8)
-                  .map((t) => (
-                    <li key={t.id}>
+              <div className="flex h-full min-h-0 flex-col">
+                <div className="mb-2 flex items-center justify-between text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                  <span>{repeatMode === "one" ? "Repeating this track" : `${upNext.length} up next`}</span>
+                  <span>{repeatMode === "all" ? "Loop on" : repeatMode === "one" ? "Repeat one" : "Loop off"}</span>
+                </div>
+                <ul className="min-h-0 flex-1 space-y-1 overflow-auto pr-1 text-sm">
+                  {(repeatMode === "one" ? [current] : queue).map((t, i) => {
+                    const active = t.id === current.id && i === 0;
+                    return (
+                      <li key={`${t.id}-${i}`}>
                       <button
-                        onClick={() => selectTrack(t.id)}
-                        className="flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left text-muted-foreground transition hover:bg-foreground/5 hover:text-foreground"
+                        onClick={() => !active && selectTrack(t.id)}
+                        className={cn(
+                          "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition",
+                          active ? "bg-primary/12 text-foreground" : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
+                        )}
                       >
-                        <img src={t.artwork} alt="" className="size-8 rounded object-cover" />
-                        <span className="truncate">{t.title}</span>
+                        <span className="w-8 shrink-0 text-center text-[10px] font-semibold uppercase tracking-wider">
+                          {active ? "Now" : i}
+                        </span>
+                        <img src={t.artwork} alt="" className="size-8 rounded bg-black/40 object-contain" />
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate">{t.title}</span>
+                          <span className="block truncate text-[11px] text-muted-foreground">{t.artist}</span>
+                        </span>
                       </button>
                     </li>
-                  ))}
-              </ul>
+                    );
+                  })}
+                </ul>
+                {queue.length <= 1 && repeatMode === "off" && (
+                  <p className="mt-2 rounded-lg bg-foreground/5 px-3 py-2 text-xs text-muted-foreground">
+                    No more tracks after this one. Turn on repeat to loop the queue.
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </aside>
@@ -311,4 +360,45 @@ function TabBtn({
       {active && <span className="absolute bottom-[-1px] left-0 right-0 h-0.5 rounded-full bg-primary" />}
     </button>
   );
+}
+
+function SeekSlider({ value, onValueChange, onValueCommit, ...props }: React.ComponentProps<typeof Slider>) {
+  const externalValue = Array.isArray(value) ? value[0] ?? 0 : 0;
+  const { displayValue, preview, commit } = useScrubValue(externalValue);
+
+  return (
+    <Slider
+      {...props}
+      value={[displayValue]}
+      onValueChange={(next) => {
+        preview(next[0] ?? 0);
+        onValueChange?.(next);
+      }}
+      onValueCommit={(next) => {
+        commit(next[0] ?? 0);
+        onValueCommit?.(next);
+      }}
+    />
+  );
+}
+
+function useScrubValue(value: number) {
+  const [draft, setDraft] = useState(value);
+  const [scrubbing, setScrubbing] = useState(false);
+
+  useEffect(() => {
+    if (!scrubbing) setDraft(value);
+  }, [scrubbing, value]);
+
+  return {
+    displayValue: scrubbing ? draft : value,
+    preview(nextValue: number) {
+      setScrubbing(true);
+      setDraft(nextValue);
+    },
+    commit(nextValue: number) {
+      setDraft(nextValue);
+      setScrubbing(false);
+    },
+  };
 }

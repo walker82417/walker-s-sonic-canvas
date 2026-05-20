@@ -6,7 +6,8 @@ import { AppLayout } from "@/components/AppLayout";
 import { VaultCard } from "@/components/VaultCard";
 import { VideoCard } from "@/components/VideoCard";
 import { fetchGithubData } from "@/lib/fetchGithubData";
-import { vaultVideos, VAULT_TYPES, type VaultType } from "@/lib/data";
+import { VAULT_TYPES, type VaultType } from "@/lib/data";
+import { loadVaultTracks, loadVaultVideos } from "@/lib/content";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/vault")({
@@ -57,13 +58,15 @@ function VaultPage() {
 }
 
 function VaultInner() {
-  const { tracks } = Route.useLoaderData();
   const [filter, setFilter] = useState<VaultType | "all">("all");
   const [query, setQuery] = useState("");
 
   const q = query.trim().toLowerCase();
 
-  const filteredTracks = (tracks as import("@/lib/data").Track[]).filter((t) => {
+  const vaultTracks = loadVaultTracks();
+  const vaultVideos = loadVaultVideos();
+
+  const filteredTracks = vaultTracks.filter((t) => {
     if (filter !== "all" && t.vaultType !== filter) return false;
     if (q && !`${t.title} ${t.artist}`.toLowerCase().includes(q)) return false;
     return true;

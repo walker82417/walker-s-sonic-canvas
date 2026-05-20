@@ -4,7 +4,7 @@ import albumLight from "@/assets/album-shining-light.jpg";
 import type { LyricLine } from "./lrc";
 
 export type VaultType = "unreleased-music" | "unreleased-video" | "demo" | "bts";
-export type VideoCategory = "official" | "remix" | "cover" | "live" | "lyrics" | "blog";
+export type VideoCategory = "official" | "remix" | "cover" | "live" | "lyrics" | "blog" | "instrumental";
 export type MusicCategory = "official" | "remix" | "cover";
 
 export interface Track {
@@ -26,7 +26,8 @@ export interface Track {
 export interface Video {
   id: string;
   title: string;
-  youtubeId: string;
+  youtubeId?: string;
+  embedUrl?: string;
   thumbnail: string;
   vaultType?: VaultType;
   year?: number;
@@ -48,6 +49,7 @@ export const VIDEO_CATEGORIES: { id: VideoCategory; label: string }[] = [
   { id: "cover", label: "Covers" },
   { id: "live", label: "Live" },
   { id: "lyrics", label: "Lyrics" },
+  { id: "instrumental", label: "Instrumental" },
   { id: "blog", label: "Blog" },
 ];
 

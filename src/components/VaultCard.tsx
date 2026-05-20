@@ -21,7 +21,7 @@ export function VaultCard({ track }: { track: Track }) {
           src={track.artwork}
           alt={track.title}
           loading="lazy"
-          className="size-full object-cover transition group-hover:scale-105"
+          className="size-full bg-black/40 object-contain transition group-hover:scale-105"
         />
         <span className="absolute bottom-3 right-3 grid size-11 place-items-center rounded-full bg-foreground text-background opacity-0 shadow-glow transition group-hover:opacity-100">
           {isCurrent && isPlaying ? (

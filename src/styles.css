@@ -113,6 +113,8 @@
   html, body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    max-width: 100%;
+    overflow-x: hidden;
   }
   /* Site-wide background: layered gradients (no photo). */
   .site-bg {
@@ -121,9 +123,8 @@
     z-index: -10;
     background-color: oklch(0.10 0.02 270);
     background-image:
-      radial-gradient(ellipse 80% 60% at 15% 0%, oklch(0.32 0.14 285 / 0.55), transparent 60%),
-      radial-gradient(ellipse 70% 60% at 100% 30%, oklch(0.30 0.16 320 / 0.45), transparent 65%),
-      radial-gradient(ellipse 90% 70% at 50% 110%, oklch(0.22 0.10 250 / 0.55), transparent 70%),
+      radial-gradient(ellipse 70% 55% at 100% 35%, oklch(0.26 0.12 220 / 0.30), transparent 65%),
+      radial-gradient(ellipse 90% 70% at 50% 110%, oklch(0.18 0.08 175 / 0.35), transparent 70%),
       linear-gradient(180deg, oklch(0.11 0.02 270) 0%, oklch(0.07 0.015 265) 100%);
   }
 }

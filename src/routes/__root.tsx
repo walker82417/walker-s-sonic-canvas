@@ -5,7 +5,7 @@ import { PlayerProvider } from "@/components/player/PlayerContext";
 import { MusicPlayer } from "@/components/player/MusicPlayer";
 import { CopyrightNotice } from "@/components/CopyrightNotice";
 import { useEffect } from "react";
-import { loadAllTracks } from "@/lib/content";
+import { loadPlayableTracks } from "@/lib/content";
 
 function NotFoundComponent() {
   return (
@@ -74,7 +74,7 @@ function RootComponent() {
   }, []);
 
   return (
-    <PlayerProvider tracks={loadAllTracks()}>
+    <PlayerProvider tracks={loadPlayableTracks()}>
       <div className="site-bg" aria-hidden />
       <CopyrightNotice />
       <Outlet />
