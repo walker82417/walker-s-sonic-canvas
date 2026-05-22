@@ -121,7 +121,8 @@ export function PlayerProvider({
   useEffect(() => {
     volumeRef.current = volume;
     mutedRef.current = muted;
-    gainRef.current?.gain.setTargetAtTime(muted ? 0 : volume, getAudioContext().currentTime, 0.02);
+    const ctx = contextRef.current;
+    if (ctx) gainRef.current?.gain.setTargetAtTime(muted ? 0 : volume, ctx.currentTime, 0.02);
   }, [volume, muted]);
   useEffect(() => {
     queueOrderRef.current = queueOrder;
@@ -232,6 +233,7 @@ export function PlayerProvider({
     } catch {
       /* source may already be stopped */
     }
+    sourceRef.current = null;
   }, []);
 
   const startBuffer = useCallback((track: Track, buffer: AudioBuffer, offset = 0, gainValue = mutedRef.current ? 0 : volumeRef.current) => {

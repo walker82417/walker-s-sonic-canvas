@@ -10,12 +10,11 @@ import {
   Youtube,
   Instagram,
   Mail,
-  CalendarDays,
-  Ticket,
   Radio,
 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { SmartVideoThumbnail } from "@/components/SmartVideoThumbnail";
+import { TourCountdown } from "@/components/TourCountdown";
 import { SOCIAL } from "@/lib/data";
 import { loadAllVideos } from "@/lib/content";
 import heroBg from "@/assets/hero-bg.jpg";
@@ -201,39 +200,7 @@ function Index() {
         </div>
       </section>
 
-      {/* LIVE SHOWS */}
-      <section className="mx-3 mt-14 md:mx-4">
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(280px,420px)]">
-          <div className="glass rounded-2xl p-6 shadow-elevated md:p-8">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">Live shows</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">Alan Walker Upcoming Shows</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-base">
-              Ticket buttons will redirect to World of Walker, Alan Walker's official tour page, or the respective event website.
-              We do not collect, store, or process ticket, payment, or booking data here.
-            </p>
-            <a
-              href="https://www.alanwalker.com/tour/"
-              target="_blank"
-              rel="noreferrer"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-semibold text-background shadow-glow transition hover:scale-[1.03]"
-            >
-              <Ticket className="size-4" /> Official tour dates
-            </a>
-          </div>
-          <div className="glass flex flex-col justify-between rounded-2xl p-6 shadow-elevated">
-            <div className="grid size-12 place-items-center rounded-xl bg-primary/15 text-primary">
-              <CalendarDays className="size-6" />
-            </div>
-            <div className="mt-8">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">Schedule status</p>
-              <h3 className="mt-2 text-xl font-bold tracking-tight">Awaiting confirmed dates</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                City, venue, and ticket partner details will be added only after the official information is confirmed.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      <TourCountdown />
 
       {/* EXPLORE TILES */}
       <section className="mx-3 mt-14 md:mx-4">

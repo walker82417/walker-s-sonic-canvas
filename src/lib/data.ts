@@ -83,7 +83,6 @@ export const tracks: Track[] = [
     quality: "Studio quality",
     format: "Studio",
     lyrics: fadeBeyondLyrics,
-    vaultType: "unreleased-music",
     year: 2025,
     category: "official",
   },
@@ -106,7 +105,6 @@ export const tracks: Track[] = [
       { time: 56, text: "Every breath a gentle stand" },
       { time: 64, text: "Every heartbeat leaves a mark" },
     ],
-    vaultType: "demo",
     year: 2024,
     category: "remix",
   },
@@ -125,7 +123,6 @@ export const tracks: Track[] = [
       { time: 16, text: "Then I saw a shining light" },
       { time: 24, text: "Calling me right back home" },
     ],
-    vaultType: "unreleased-music",
     year: 2025,
     category: "cover",
   },
@@ -141,9 +138,9 @@ export const videos: Video[] = [
 ];
 
 export const vaultVideos: Video[] = [
-  { id: "v1", title: "New Single Teaser", youtubeId: "60ItHLz5WEA", thumbnail: "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg", vaultType: "unreleased-video", year: 2025 },
-  { id: "v2", title: "Studio Session, Fade Beyond", youtubeId: "1-xGerv5FOk", thumbnail: "https://i.ytimg.com/vi/1-xGerv5FOk/hqdefault.jpg", vaultType: "bts", year: 2025 },
-  { id: "v3", title: "Acoustic Demo Take 1", youtubeId: "2i2khp_npdE", thumbnail: "https://i.ytimg.com/vi/2i2khp_npdE/hqdefault.jpg", vaultType: "demo", year: 2024 },
+  { id: "v1", title: "New Single Teaser", youtubeId: "60ItHLz5WEA", thumbnail: "https://i.ytimg.com/vi/60ItHLz5WEA/hqdefault.jpg", year: 2025 },
+  { id: "v2", title: "Studio Session, Fade Beyond", youtubeId: "1-xGerv5FOk", thumbnail: "https://i.ytimg.com/vi/1-xGerv5FOk/hqdefault.jpg", year: 2025 },
+  { id: "v3", title: "Acoustic Demo Take 1", youtubeId: "2i2khp_npdE", thumbnail: "https://i.ytimg.com/vi/2i2khp_npdE/hqdefault.jpg", year: 2024 },
 ];
 
 export const SOCIAL = {

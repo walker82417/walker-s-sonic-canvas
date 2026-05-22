@@ -18,9 +18,7 @@ import {
   GITHUB_BASE,
   type MusicManifestEntry,
 } from "@/content/music/manifest";
-import musicDetailsRaw from "@/content/music/details.text?raw";
 import { videoManifest, type VideoManifestEntry } from "@/content/videos/manifest";
-import videoDetailsRaw from "@/content/videos/video details.txt?raw";
 import fallbackArt from "@/assets/album-fade-beyond.jpg";
 
 export type { MusicCategory, VideoCategory };
@@ -35,11 +33,23 @@ const lrcFiles = import.meta.glob("/src/content/music/**/*.lrc", {
   query: "?raw",
   import: "default",
 }) as Record<string, string>;
+const musicDetailsFiles = import.meta.glob("/src/content/music/details.{text,txt}", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>;
+const videoDetailsFiles = import.meta.glob("/src/content/videos/*details*.txt", {
+  eager: true,
+  query: "?raw",
+  import: "default",
+}) as Record<string, string>;
 const artFiles = import.meta.glob("/src/content/music/**/*.{jpg,jpeg,png,webp}", {
   eager: true,
   query: "?url",
   import: "default",
 }) as Record<string, string>;
+const musicDetailsRaw = Object.values(musicDetailsFiles).join("\n");
+const videoDetailsRaw = Object.values(videoDetailsFiles).join("\n");
 
 function basename(p: string) {
   const f = p.split("/").pop() ?? p;
@@ -225,13 +235,6 @@ function parseDetailCategory(parts: string[]): MusicCategory {
   return (type as MusicCategory | undefined) ?? "remix";
 }
 
-function parseVaultType(parts: string[], media: "music" | "video"): Track["vaultType"] | Video["vaultType"] | undefined {
-  if (!parts.some((p) => p.trim().toLowerCase() === "vault")) return undefined;
-  const lowered = parts.map((p) => p.trim().toLowerCase());
-  if (media === "music") return lowered.includes("demo") ? "demo" : "unreleased-music";
-  return lowered.includes("bts") || lowered.includes("behind the scenes") ? "bts" : "unreleased-video";
-}
-
 function sanitizeAudioUrl(raw: string) {
   const nested = raw.lastIndexOf("https://");
   const clean = nested > 0 ? raw.slice(nested) : raw;
@@ -254,6 +257,7 @@ function detailsTracks(): Track[] {
 
   for (const line of lines) {
     if (!/^\s*\d+\./.test(line)) continue;
+    if (isVaultDetailLine(line)) continue;
     const audioMatch = line.match(/https?:\/\/\S+?\.mp3/i);
     if (!audioMatch) continue;
 
@@ -284,7 +288,6 @@ function detailsTracks(): Track[] {
       format: "Studio",
       lyrics: [],
       category: parseDetailCategory(parts),
-      vaultType: parseVaultType(parts, "music") as Track["vaultType"],
       credits: `${title}. Credit: ${artist}. All rights reserved to the respective owners.`,
     });
   }
@@ -349,6 +352,7 @@ function videoDetails(): Video[] {
   const out: Video[] = [];
   for (const line of videoDetailsRaw.split(/\r?\n/)) {
     if (!line.trim() || line.trim().startsWith("*")) continue;
+    if (isVaultDetailLine(line)) continue;
     const urlMatch = line.match(/https?:\/\/\S+/i);
     if (!urlMatch) continue;
     const youtubeId = youtubeIdFromUrl(urlMatch[0]);
@@ -373,7 +377,6 @@ function videoDetails(): Video[] {
       category: parseVideoCategory(parts),
       description: `${title} from Walker's Music World.`,
       credits: artist,
-      vaultType: parseVaultType(parts, "video") as Video["vaultType"],
     });
   }
   return out;
@@ -430,20 +433,21 @@ export function loadAllVideos(): Video[] {
 }
 
 export function loadVaultTracks(): Track[] {
-  return detailsTracks().filter((track) => track.vaultType);
+  return [];
 }
 
 export function loadVaultVideos(): Video[] {
-  const seen = new Set<string>();
-  return videoDetails().filter((video) => {
-    const key = video.youtubeId ?? video.embedUrl ?? video.id;
-    if (!video.vaultType || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  return [];
 }
 
 export function loadPlayableTracks(): Track[] {
-  const merged = [...loadAllTracks(), ...loadVaultTracks()];
-  return merged.length ? merged : sampleTracks;
+  return loadAllTracks();
+}
+
+function isVaultDetailLine(line: string) {
+  const urlIndex = line.search(/https?:\/\//i);
+  return line
+    .slice(0, urlIndex >= 0 ? urlIndex : line.length)
+    .split("/")
+    .some((part) => part.trim().toLowerCase() === "vault");
 }

@@ -8,6 +8,7 @@ import { loadAllVideos } from "@/lib/content";
 import { cn } from "@/lib/utils";
 import { usePlayer } from "@/components/player/PlayerContext";
 import { SmartVideoThumbnail } from "@/components/SmartVideoThumbnail";
+import { isTrustedYoutubeOrigin, youtubeEmbedUrl, youtubeWatchUrl } from "@/lib/video";
 
 export const Route = createFileRoute("/videos")({
   component: VideosPage,
@@ -24,7 +25,8 @@ function VideosPage() {
   const [filter, setFilter] = useState<VideoCategory | "all">("all");
   const [active, setActive] = useState<Video | null>(null);
   const { pauseForExternalVideo, resumeAfterExternalVideo } = usePlayer();
-  const activeEmbedUrl = active?.embedUrl ?? (active?.youtubeId ? `https://www.youtube-nocookie.com/embed/${active.youtubeId}?autoplay=1&rel=0&enablejsapi=1` : "");
+  const activeEmbedUrl = active?.embedUrl ?? youtubeEmbedUrl(active?.youtubeId);
+  const activeWatchUrl = youtubeWatchUrl(active?.youtubeId);
 
   const filtered = useMemo(
     () => (filter === "all" ? allVideos : allVideos.filter((v) => v.category === filter)),
@@ -76,8 +78,9 @@ function VideosPage() {
                   key={active.youtubeId ?? active.embedUrl}
                   src={activeEmbedUrl}
                   title={active.title}
-                  allow="autoplay; encrypted-media; picture-in-picture"
+                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                   allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
                   className="size-full"
                 />
               </div>
@@ -97,6 +100,16 @@ function VideosPage() {
                   <p className="mt-3 text-xs text-muted-foreground">
                     <span className="font-semibold text-foreground">Credits:</span> {active.credits}
                   </p>
+                )}
+                {activeWatchUrl && (
+                  <a
+                    href={activeWatchUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-4 inline-flex rounded-full border border-border bg-foreground/5 px-4 py-2 text-xs font-semibold text-foreground transition hover:bg-foreground/10"
+                  >
+                    Watch on YouTube
+                  </a>
                 )}
               </div>
             </motion.section>
@@ -166,7 +179,7 @@ function useVideoAudioHandoff(
   useEffect(() => {
     if (!active) return;
     const onMessage = (event: MessageEvent) => {
-      if (!String(event.origin).includes("youtube")) return;
+      if (!isTrustedYoutubeOrigin(event.origin)) return;
       const data = typeof event.data === "string" ? safeJson(event.data) : event.data;
       const state = data?.info?.playerState;
       if (state === 0 || state === 2) onVideoStop();

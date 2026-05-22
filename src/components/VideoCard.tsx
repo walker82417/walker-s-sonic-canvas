@@ -3,11 +3,13 @@ import { Play, X } from "lucide-react";
 import type { Video } from "@/lib/data";
 import { usePlayer } from "@/components/player/PlayerContext";
 import { SmartVideoThumbnail } from "@/components/SmartVideoThumbnail";
+import { isTrustedYoutubeOrigin, youtubeEmbedUrl, youtubeWatchUrl } from "@/lib/video";
 
 export function VideoCard({ video }: { video: Video }) {
   const [playing, setPlaying] = useState(false);
   const { pauseForExternalVideo, resumeAfterExternalVideo } = usePlayer();
-  const embedUrl = video.embedUrl ?? `https://www.youtube-nocookie.com/embed/${video.youtubeId}?autoplay=1&rel=0&enablejsapi=1`;
+  const embedUrl = video.embedUrl ?? youtubeEmbedUrl(video.youtubeId);
+  const watchUrl = youtubeWatchUrl(video.youtubeId);
 
   useEffect(() => {
     if (!playing) return;
@@ -18,7 +20,7 @@ export function VideoCard({ video }: { video: Video }) {
   useEffect(() => {
     if (!playing) return;
     const onMessage = (event: MessageEvent) => {
-      if (!String(event.origin).includes("youtube")) return;
+      if (!isTrustedYoutubeOrigin(event.origin)) return;
       const data = typeof event.data === "string" ? safeJson(event.data) : event.data;
       const state = data?.info?.playerState;
       if (state === 0 || state === 2) setPlaying(false);
@@ -35,8 +37,9 @@ export function VideoCard({ video }: { video: Video }) {
             <iframe
               src={embedUrl}
               title={video.title}
-              allow="autoplay; encrypted-media; picture-in-picture"
+              allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
               allowFullScreen
+              referrerPolicy="strict-origin-when-cross-origin"
               className="absolute inset-0 size-full"
             />
             <button
@@ -70,7 +73,20 @@ export function VideoCard({ video }: { video: Video }) {
       </div>
       <div className="p-4">
         <h3 className="truncate font-semibold">{video.title}</h3>
-        <p className="text-xs text-muted-foreground">Walker's Music World</p>
+        <div className="mt-1 flex items-center justify-between gap-3">
+          <p className="truncate text-xs text-muted-foreground">Walker's Music World</p>
+          {watchUrl && (
+            <a
+              href={watchUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={(event) => event.stopPropagation()}
+              className="shrink-0 text-xs font-semibold text-primary hover:underline"
+            >
+              YouTube
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

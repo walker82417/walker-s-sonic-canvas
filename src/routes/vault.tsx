@@ -164,7 +164,8 @@ function FilterChip({ active, onClick, children }: { active: boolean; onClick: (
 function EmptyHint() {
   return (
     <div className="glass rounded-2xl p-8 text-center text-sm text-muted-foreground">
-      Nothing in this filter yet. Check back soon.
+      Private vault media is not bundled into the public website. Add a server-side gate before publishing
+      unreleased audio or video links here.
     </div>
   );
 }

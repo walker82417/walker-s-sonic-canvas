@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Info, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -50,38 +51,51 @@ export function CreditsButton({
         {label}
       </button>
 
-      {open && (
-        <div
-          className="fixed inset-0 z-[100] grid place-items-center bg-background/70 p-4 backdrop-blur"
-          onClick={() => setOpen(false)}
-        >
-          <div
-            onClick={(e) => e.stopPropagation()}
-            className="player-surface ring-soft w-full max-w-md rounded-2xl p-5"
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] grid place-items-center bg-background/75 p-4 backdrop-blur-md"
+            onClick={() => setOpen(false)}
           >
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
-                  Credits
-                </p>
-                <h3 className="mt-1 text-base font-bold tracking-tight">{title}</h3>
+            <motion.div
+              initial={{ opacity: 0, y: 18, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 18, scale: 0.96 }}
+              transition={{ type: "spring", stiffness: 260, damping: 28 }}
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-label={`Credits for ${title}`}
+              className="player-surface ring-soft w-full max-w-lg rounded-2xl p-5 md:p-6"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.25em] text-muted-foreground">
+                    Credits
+                  </p>
+                  <h3 className="mt-1 text-xl font-bold tracking-tight">{title}</h3>
+                  {artist && <p className="mt-1 text-sm text-muted-foreground">{artist}</p>}
+                </div>
+                <button
+                  onClick={() => setOpen(false)}
+                  aria-label="Close credits"
+                  className="rounded-md p-1 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                >
+                  <X className="size-4" />
+                </button>
               </div>
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close credits"
-                className="rounded-md p-1 text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
-              >
-                <X className="size-4" />
-              </button>
-            </div>
-            <p className="mt-4 text-sm leading-relaxed text-foreground/90">{text}</p>
-            <p className="mt-3 text-xs text-muted-foreground">
-              All music and video copyright belongs to the respective owners. This
-              channel is a fan space built out of love for the community.
-            </p>
-          </div>
-        </div>
-      )}
+              <p className="mt-5 text-sm leading-relaxed text-foreground/90 md:text-base">{text}</p>
+              <p className="mt-4 rounded-xl bg-foreground/5 px-3 py-2 text-xs leading-relaxed text-muted-foreground">
+                All music and video copyright belongs to the respective owners. This channel is a fan
+                space built out of love for the community.
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
