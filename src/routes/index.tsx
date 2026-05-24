@@ -11,6 +11,7 @@ import {
   Instagram,
   Mail,
   Radio,
+  Globe2,
 } from "lucide-react";
 import { AppLayout } from "@/components/AppLayout";
 import { SmartVideoThumbnail } from "@/components/SmartVideoThumbnail";
@@ -121,6 +122,9 @@ function Index() {
               </a>
               <a href={`mailto:${SOCIAL.email}`} aria-label="Email" className="transition hover:text-primary">
                 <Mail className="size-5" />
+              </a>
+              <a href={SOCIAL.worldOfWalker} target="_blank" rel="noreferrer" aria-label="World of Walker" className="transition hover:text-primary">
+                <Globe2 className="size-5" />
               </a>
             </div>
           </div>

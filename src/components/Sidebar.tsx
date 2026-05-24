@@ -71,7 +71,7 @@ export function Sidebar() {
       <aside
         onMouseLeave={() => setOpen(false)}
         className={cn(
-          "fixed left-0 top-0 z-50 flex h-dvh w-72 shrink-0 flex-col gap-2 p-4",
+          "fixed left-0 top-0 z-50 flex h-dvh w-[min(18rem,calc(100svw-1rem))] shrink-0 flex-col gap-2 p-4",
           "transition-transform duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
           mobileOpen ? "translate-x-0" : "-translate-x-full",
           "md:translate-x-[-100%]",

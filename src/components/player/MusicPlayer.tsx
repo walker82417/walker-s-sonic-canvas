@@ -152,7 +152,7 @@ export function MusicPlayer() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
             transition={{ type: "spring", stiffness: 220, damping: 28 }}
-            className="fixed bottom-0 left-0 right-0 z-50"
+            className="fixed bottom-0 left-0 right-0 z-50 max-w-[100svw] overflow-hidden"
           >
             {/* Mobile lyrics drawer (full-screen sheet) */}
             <AnimatePresence>
@@ -166,7 +166,7 @@ export function MusicPlayer() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <img src={current.artwork} alt="" className="size-10 rounded-md bg-black/40 object-contain" />
-                      <div>
+                      <div className="min-w-0">
                         <div className="truncate text-sm font-semibold">{showQueue ? "Queue" : current.title}</div>
                         <div className="truncate text-[11px] text-muted-foreground">
                           {showQueue ? `${upNext.length} up next` : current.artist}
@@ -199,7 +199,7 @@ export function MusicPlayer() {
               )}
             </AnimatePresence>
 
-            <div className="player-surface ring-soft mx-1 mb-1 max-w-[calc(100vw-0.5rem)] rounded-2xl md:mx-4 md:mb-4 md:max-w-none">
+            <div className="player-surface ring-soft mx-1 mb-1 max-w-[calc(100svw-0.5rem)] rounded-2xl md:mx-4 md:mb-4 md:max-w-none">
               <AnimatePresence>
                 {expanded && (
                   <motion.div
@@ -216,7 +216,7 @@ export function MusicPlayer() {
                           alt={current.title}
                           className="aspect-square w-full max-w-[280px] rounded-2xl bg-black/40 object-contain shadow-elevated"
                         />
-                        <h2 className="mt-5 text-2xl font-bold tracking-tight">{current.title}</h2>
+                        <h2 className="mt-5 line-clamp-2 text-2xl font-bold leading-tight tracking-tight">{current.title}</h2>
                         <p className="text-sm text-muted-foreground">{current.artist}</p>
                       </div>
                       <div className="h-[280px] md:h-[360px]">
@@ -260,11 +260,11 @@ export function MusicPlayer() {
               {/* Mobile compact bar */}
               <div className="md:hidden">
                 <MobileSeek currentTime={currentTime} duration={totalDuration} buffered={buffered} onSeek={seek} />
-                <div className="grid grid-cols-[minmax(0,1fr)_auto_auto_auto_auto_auto_auto] items-center gap-1 px-2 py-2.5">
-                  <button onClick={() => setExpanded((e) => !e)} className="flex min-w-0 flex-1 items-center gap-3 text-left">
-                    <img src={current.artwork} alt="" className="size-12 shrink-0 rounded-lg bg-black/40 object-contain shadow-elevated" />
+                <div className="flex items-center gap-1 px-2 py-2.5">
+                  <button onClick={() => setExpanded((e) => !e)} className="flex min-w-0 flex-1 items-center gap-2 text-left min-[380px]:gap-3">
+                    <img src={current.artwork} alt="" className="size-10 shrink-0 rounded-lg bg-black/40 object-contain shadow-elevated min-[380px]:size-12" />
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold">{current.title}</div>
+                      <div className="line-clamp-2 text-sm font-semibold leading-tight">{current.title}</div>
                       <div className="truncate text-[11px] text-muted-foreground">
                         {formatTime(currentTime)} · {current.artist}
                       </div>
@@ -272,7 +272,7 @@ export function MusicPlayer() {
                   </button>
                   <button
                     onClick={toggleShuffle}
-                    className={cn("hidden rounded-md p-2 min-[360px]:inline-flex", shuffle ? "text-primary" : "text-muted-foreground")}
+                    className={cn("hidden shrink-0 rounded-md p-2 min-[430px]:inline-flex", shuffle ? "text-primary" : "text-muted-foreground")}
                     aria-label="Shuffle"
                     aria-pressed={shuffle}
                   >
@@ -280,7 +280,7 @@ export function MusicPlayer() {
                   </button>
                   <button
                     onClick={toggleRepeat}
-                    className={cn("rounded-md p-2", repeatMode !== "off" ? "text-primary" : "text-muted-foreground")}
+                    className={cn("hidden shrink-0 rounded-md p-2 min-[360px]:inline-flex", repeatMode !== "off" ? "text-primary" : "text-muted-foreground")}
                     aria-label={repeatLabel}
                     aria-pressed={repeatMode !== "off"}
                   >
@@ -288,7 +288,7 @@ export function MusicPlayer() {
                   </button>
                   <button
                     onClick={toggleQueuePanel}
-                    className={cn("rounded-md p-2", showQueue ? "text-primary" : "text-muted-foreground")}
+                    className={cn("hidden shrink-0 rounded-md p-2 min-[390px]:inline-flex", showQueue ? "text-primary" : "text-muted-foreground")}
                     aria-label="Queue"
                     aria-pressed={showQueue}
                   >
@@ -296,7 +296,7 @@ export function MusicPlayer() {
                   </button>
                   <button
                     onClick={toggleLyricsPanel}
-                    className={cn("hidden rounded-md p-2 min-[430px]:inline-flex", showLyrics ? "text-primary" : "text-muted-foreground")}
+                    className={cn("hidden shrink-0 rounded-md p-2 min-[520px]:inline-flex", showLyrics ? "text-primary" : "text-muted-foreground")}
                     aria-label="Lyrics"
                     aria-pressed={showLyrics}
                   >
@@ -304,12 +304,12 @@ export function MusicPlayer() {
                   </button>
                   <button
                     onClick={toggle}
-                    className="grid size-11 place-items-center rounded-full bg-foreground text-background shadow-glow"
+                    className="grid size-10 shrink-0 place-items-center rounded-full bg-foreground text-background shadow-glow min-[380px]:size-11"
                     aria-label={isPlaying ? "Pause" : "Play"}
                   >
                     {isBuffering ? <Loader2 className="size-4 animate-spin" /> : isPlaying ? <Pause className="size-5 fill-current" /> : <Play className="size-5 fill-current pl-0.5" />}
                   </button>
-                  <button onClick={() => setExpanded((e) => !e)} className="text-muted-foreground" aria-label={expanded ? "Collapse" : "Expand"}>
+                  <button onClick={() => setExpanded((e) => !e)} className="shrink-0 text-muted-foreground" aria-label={expanded ? "Collapse" : "Expand"}>
                     {expanded ? <ChevronDown className="size-5" /> : <ChevronUp className="size-5" />}
                   </button>
                 </div>
@@ -319,7 +319,7 @@ export function MusicPlayer() {
               <div className="mx-auto hidden max-w-[1800px] items-center gap-6 px-6 py-3 md:flex">
                 <div className="flex w-[300px] min-w-0 items-center gap-3">
                   <img src={current.artwork} alt={current.title} className="size-14 shrink-0 rounded-lg bg-black/40 object-contain shadow-elevated" width={56} height={56} />
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex-1">
                     <div className="truncate text-sm font-semibold">{current.title}</div>
                     <div className="truncate text-xs text-muted-foreground">{current.artist}</div>
                   </div>
@@ -520,7 +520,7 @@ function QueueList({
                 </span>
                 <img src={track.artwork} alt="" loading="lazy" className="size-10 shrink-0 rounded-md bg-black/40 object-contain" />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold">{track.title}</span>
+                  <span className="block line-clamp-2 text-sm font-semibold leading-snug">{track.title}</span>
                   <span className="block truncate text-[11px] text-muted-foreground">{track.artist}</span>
                 </span>
               </button>

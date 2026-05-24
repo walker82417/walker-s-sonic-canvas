@@ -12,11 +12,11 @@ export function CopyrightNotice() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem(STORAGE_KEY)) return;
-    const showTimer = setTimeout(() => setOpen(true), 500);
+    const showTimer = setTimeout(() => setOpen(true), 250);
     const hideTimer = setTimeout(() => {
       setOpen(false);
       sessionStorage.setItem(STORAGE_KEY, "1");
-    }, 6000);
+    }, 2250);
     return () => {
       clearTimeout(showTimer);
       clearTimeout(hideTimer);
@@ -36,11 +36,11 @@ export function CopyrightNotice() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -18 }}
           transition={{ type: "spring", stiffness: 240, damping: 26 }}
-          className="fixed inset-0 z-[60] grid place-items-center p-4"
+          className="pointer-events-none fixed inset-x-0 top-6 z-[60] grid place-items-center px-4"
           role="status"
           aria-live="polite"
         >
-          <div className="glass-strong ring-soft relative flex w-[min(92vw,640px)] items-start gap-3 rounded-2xl px-5 py-5 shadow-elevated md:px-6 md:py-6">
+          <div className="glass-strong ring-soft pointer-events-auto relative flex w-[min(92vw,640px)] items-start gap-3 rounded-2xl px-5 py-5 shadow-elevated md:px-6 md:py-6">
             <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
               <Info className="size-4" />
             </div>
@@ -70,7 +70,7 @@ function TypingText({ text }: { text: string }) {
           key={`${word}-${index}`}
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.035, duration: 0.18 }}
+          transition={{ delay: index * 0.01, duration: 0.12 }}
           className="inline-block"
         >
           {word}

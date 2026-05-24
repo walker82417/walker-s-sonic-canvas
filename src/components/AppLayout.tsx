@@ -17,9 +17,9 @@ export function AppLayout({
   hideFooter?: boolean;
 }) {
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh w-full max-w-[100svw] overflow-x-hidden">
       <Sidebar />
-      <main className="pb-32">{children}</main>
+      <main className="w-full max-w-[100svw] overflow-x-hidden pb-32">{children}</main>
       {!hideFooter && <Footer />}
     </div>
   );

@@ -145,8 +145,10 @@ export const vaultVideos: Video[] = [
 
 export const SOCIAL = {
   email: "walkersmusicworld@gmail.com",
-  instagram: "https://instagram.com/walkersmuciworld",
-  instagramHandle: "@walkersmuciworld",
+  instagram: "https://www.instagram.com/walkers.musicworld/",
+  instagramHandle: "@walkers.musicworld",
   youtube: "https://youtube.com/@walkersmusicworld",
   youtubeHandle: "Walker's Music World",
+  worldOfWalker: "https://worldofwalker.com/",
+  worldOfWalkerHandle: "World of Walker",
 };

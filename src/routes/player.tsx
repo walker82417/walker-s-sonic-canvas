@@ -95,32 +95,32 @@ function Inner() {
   const RepeatIcon = repeatMode === "one" ? Repeat1 : Repeat;
 
   return (
-    <div className="px-4 py-6 md:px-10 md:py-10">
+    <div className="mx-auto w-full max-w-[100svw] overflow-hidden px-3 py-5 sm:px-4 md:px-6 lg:px-8 2xl:max-w-screen-2xl 2xl:px-10 2xl:py-10">
       <header className="mb-6">
         <p className="text-xs font-semibold uppercase tracking-[0.25em] text-muted-foreground">Walker Player</p>
         <h1 className="mt-1 text-3xl font-bold tracking-tight md:text-4xl">Library</h1>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
+      <div className="grid w-full max-w-full gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(300px,420px)] 2xl:gap-6">
         {/* Library column */}
-        <section>
+        <section className="min-w-0">
           <div className="mb-4 flex flex-wrap items-center gap-3">
-            <div className="glass relative flex min-w-[220px] flex-1 items-center gap-2 rounded-full px-4 py-2">
+            <div className="glass relative flex min-w-0 flex-1 basis-full items-center gap-2 rounded-full px-4 py-2 sm:basis-[220px]">
               <Search className="size-4 text-muted-foreground" />
               <input
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="Search songs"
-                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
               />
             </div>
-            <div className="flex gap-1.5">
+            <div className="flex max-w-full gap-1.5 overflow-x-auto pb-1">
               {CATEGORIES.map((c) => (
                 <button
                   key={c.id}
                   onClick={() => setCat(c.id)}
                   className={cn(
-                    "rounded-full px-3 py-1.5 text-xs font-semibold transition",
+                    "shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition",
                     cat === c.id
                       ? "bg-foreground text-background"
                       : "bg-foreground/5 text-muted-foreground hover:text-foreground",
@@ -132,7 +132,7 @@ function Inner() {
             </div>
           </div>
 
-          <div className="player-surface ring-soft overflow-hidden rounded-2xl">
+          <div className="player-surface ring-soft w-full max-w-full overflow-hidden rounded-2xl">
             <ul className="divide-y divide-border">
               {filtered.length === 0 && (
                 <li className="px-4 py-10 text-center text-sm text-muted-foreground">No songs found.</li>
@@ -152,11 +152,11 @@ function Inner() {
                         }
                       }}
                       className={cn(
-                        "group flex w-full cursor-pointer items-center gap-3 px-3 py-3 text-left transition hover:bg-foreground/5",
+                        "group flex w-full max-w-full cursor-pointer items-center gap-2 px-2 py-3 text-left transition hover:bg-foreground/5 sm:gap-3 sm:px-3",
                         active && "bg-foreground/5",
                       )}
                     >
-                      <div className="grid w-7 place-items-center text-xs tabular-nums text-muted-foreground">
+                      <div className="grid w-6 shrink-0 place-items-center text-xs tabular-nums text-muted-foreground sm:w-7">
                         {active && isPlaying ? (
                           <span className="flex h-3 items-end gap-0.5">
                             <span className="h-2 w-0.5 animate-pulse bg-primary" />
@@ -167,12 +167,12 @@ function Inner() {
                           i + 1
                         )}
                       </div>
-                      <img src={t.artwork} alt="" loading="lazy" className="size-11 shrink-0 rounded-md bg-black/40 object-contain" />
+                      <img src={t.artwork} alt="" loading="lazy" className="size-10 shrink-0 rounded-md bg-black/40 object-contain sm:size-11" />
                       <div className="min-w-0 flex-1">
-                        <div className={cn("truncate text-sm font-semibold", active && "text-primary")}>
+                        <div className={cn("line-clamp-2 text-sm font-semibold leading-snug sm:truncate", active && "text-primary")}>
                           {t.title}
                         </div>
-                        <div className="truncate text-xs text-muted-foreground">
+                        <div className="line-clamp-1 text-xs text-muted-foreground">
                           {t.artist} {t.category ? `· ${t.category}` : ""}
                         </div>
                       </div>
@@ -187,7 +187,7 @@ function Inner() {
                           compact
                         />
                       </div>
-                      <Heart className="ml-2 size-4 shrink-0 text-muted-foreground opacity-0 transition group-hover:opacity-100" />
+                      <Heart className="ml-2 hidden size-4 shrink-0 text-muted-foreground opacity-0 transition group-hover:opacity-100 sm:block" />
                     </div>
                   </li>
                 );
@@ -197,12 +197,12 @@ function Inner() {
         </section>
 
         {/* Now playing column */}
-        <aside className="player-surface ring-soft sticky top-4 flex max-h-[calc(100dvh-2rem)] flex-col gap-4 self-start rounded-3xl p-5">
-          <div className="overflow-hidden rounded-2xl shadow-elevated">
+        <aside className="player-surface ring-soft flex min-h-0 w-full max-w-full flex-col gap-4 self-start rounded-3xl p-4 sm:p-5 xl:sticky xl:top-4 xl:max-h-[calc(100dvh-2rem)]">
+          <div className="mx-auto w-full max-w-[min(78svw,360px)] overflow-hidden rounded-2xl shadow-elevated xl:max-w-none">
             <img src={current.artwork} alt={current.title} className="aspect-square w-full bg-black/40 object-contain" />
           </div>
-          <div>
-            <h2 className="truncate text-xl font-bold tracking-tight">{current.title}</h2>
+          <div className="min-w-0">
+            <h2 className="line-clamp-2 text-xl font-bold leading-tight tracking-tight">{current.title}</h2>
             <p className="truncate text-sm text-muted-foreground">{current.artist}</p>
             <div className="mt-2">
               <CreditsButton
@@ -234,27 +234,27 @@ function Inner() {
           </div>
 
           {/* Transport */}
-          <div className="flex items-center justify-center gap-5">
+          <div className="flex items-center justify-center gap-3 min-[360px]:gap-4 min-[420px]:gap-5">
             <button
               onClick={toggleShuffle}
               className={cn("text-muted-foreground hover:text-foreground", shuffle && "text-primary hover:text-primary")}
               aria-label="Shuffle"
               aria-pressed={shuffle}
             >
-              <Shuffle className="size-5" />
+              <Shuffle className="size-4 min-[380px]:size-5" />
             </button>
             <button onClick={prev} className="text-muted-foreground hover:text-foreground" aria-label="Previous">
-              <SkipBack className="size-5" />
+              <SkipBack className="size-4 min-[380px]:size-5" />
             </button>
             <button
               onClick={toggle}
-              className="grid size-14 place-items-center rounded-full bg-foreground text-background shadow-glow transition hover:scale-105"
+              className="grid size-12 place-items-center rounded-full bg-foreground text-background shadow-glow transition hover:scale-105 min-[380px]:size-14"
               aria-label={isPlaying ? "Pause" : "Play"}
             >
               {isPlaying ? <Pause className="size-6 fill-current" /> : <Play className="size-6 fill-current pl-0.5" />}
             </button>
             <button onClick={next} className="text-muted-foreground hover:text-foreground" aria-label="Next">
-              <SkipForward className="size-5" />
+              <SkipForward className="size-4 min-[380px]:size-5" />
             </button>
             <button
               onClick={toggleRepeat}
@@ -262,7 +262,7 @@ function Inner() {
               aria-label={repeatLabel}
               aria-pressed={repeatMode !== "off"}
             >
-              <RepeatIcon className="size-5" />
+              <RepeatIcon className="size-4 min-[380px]:size-5" />
             </button>
           </div>
 
@@ -280,7 +280,7 @@ function Inner() {
           </div>
 
           {/* Tabs (lyrics / queue brief) */}
-          <div className="flex gap-4 border-t border-border pt-3">
+          <div className="flex gap-4 overflow-x-auto border-t border-border pt-3">
             <TabBtn icon={Music2} active={tab === "lyrics"} onClick={() => setTab("lyrics")}>
               Lyrics
             </TabBtn>
@@ -288,7 +288,7 @@ function Inner() {
               Up next
             </TabBtn>
           </div>
-          <div className="min-h-0 flex-1 overflow-hidden rounded-xl">
+          <div className="min-h-[320px] flex-1 overflow-hidden rounded-xl xl:min-h-0">
             {tab === "lyrics" ? (
               <LyricsSync lyrics={current.lyrics} currentTime={currentTime} onSeek={seek} />
             ) : (
@@ -305,17 +305,17 @@ function Inner() {
                       <button
                         onClick={() => !active && selectTrack(t.id)}
                         className={cn(
-                          "flex w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition",
+                          "flex w-full max-w-full items-center gap-2 rounded-lg px-2 py-1.5 text-left transition",
                           active ? "bg-primary/12 text-foreground" : "text-muted-foreground hover:bg-foreground/5 hover:text-foreground",
                         )}
                       >
-                        <span className="w-8 shrink-0 text-center text-[10px] font-semibold uppercase tracking-wider">
+                        <span className="w-7 shrink-0 text-center text-[10px] font-semibold uppercase tracking-wider sm:w-8">
                           {active ? "Now" : i}
                         </span>
-                        <img src={t.artwork} alt="" className="size-8 rounded bg-black/40 object-contain" />
-                        <span className="min-w-0 flex-1">
-                          <span className="block truncate">{t.title}</span>
-                          <span className="block truncate text-[11px] text-muted-foreground">{t.artist}</span>
+                        <img src={t.artwork} alt="" className="size-8 shrink-0 rounded bg-black/40 object-contain" />
+                        <span className="min-w-0 flex-1 overflow-hidden">
+                          <span className="block line-clamp-2 leading-snug">{t.title}</span>
+                          <span className="block line-clamp-1 text-[11px] text-muted-foreground">{t.artist}</span>
                         </span>
                       </button>
                     </li>

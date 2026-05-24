@@ -1,4 +1,4 @@
-import { Mail, Instagram, Youtube } from "lucide-react";
+import { Globe2, Mail, Instagram, Youtube } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { SOCIAL } from "@/lib/data";
 
@@ -50,6 +50,11 @@ export function Footer() {
             <li>
               <a href={SOCIAL.instagram} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-primary">
                 <Instagram className="size-4" /> {SOCIAL.instagramHandle}
+              </a>
+            </li>
+            <li>
+              <a href={SOCIAL.worldOfWalker} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 hover:text-primary">
+                <Globe2 className="size-4" /> {SOCIAL.worldOfWalkerHandle}
               </a>
             </li>
           </ul>

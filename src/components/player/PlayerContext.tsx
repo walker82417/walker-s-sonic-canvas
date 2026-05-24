@@ -63,6 +63,18 @@ interface AudioAnalysis {
 }
 
 const Ctx = createContext<PlayerState | null>(null);
+const PLAYER_STORAGE_KEY = "wmw_player_state_v1";
+
+interface PersistedPlayerState {
+  trackId: string;
+  currentTime: number;
+  volume: number;
+  muted: boolean;
+  shuffle: boolean;
+  repeatMode: RepeatMode;
+  hasStarted: boolean;
+  savedAt: number;
+}
 
 export function PlayerProvider({
   children,
@@ -96,6 +108,8 @@ export function PlayerProvider({
   const startedAtRef = useRef(0);
   const pausedAtRef = useRef(0);
   const transitioningRef = useRef(false);
+  const restoredPositionRef = useRef(0);
+  const skipInitialIndexEffectRef = useRef(false);
   const skipIndexPlaybackRef = useRef(false);
   const shouldAutoAdvanceRef = useRef(true);
   const playTokenRef = useRef(0);
@@ -110,6 +124,21 @@ export function PlayerProvider({
   const queueOrderRef = useRef(queueOrder);
   const shuffleRef = useRef(shuffle);
   const repeatModeRef = useRef(repeatMode);
+
+  useEffect(() => {
+    const restored = readPersistedPlayerState(tracks);
+    if (!restored) return;
+    restoredPositionRef.current = restored.state.currentTime;
+    pausedAtRef.current = restored.state.currentTime;
+    skipInitialIndexEffectRef.current = true;
+    setCurrentIndex(restored.index);
+    setCurrentTime(restored.state.currentTime);
+    setVolumeState(restored.state.volume);
+    setMuted(restored.state.muted);
+    setShuffle(restored.state.shuffle);
+    setRepeatMode(restored.state.repeatMode);
+    setHasStarted(restored.state.hasStarted);
+  }, [tracks]);
 
   useEffect(() => {
     currentRef.current = current;
@@ -400,7 +429,14 @@ export function PlayerProvider({
 
   useEffect(() => {
     setBuffered(0);
-    setCurrentTime(0);
+    if (skipInitialIndexEffectRef.current) {
+      skipInitialIndexEffectRef.current = false;
+      const restoredPosition = restoredPositionRef.current;
+      pausedAtRef.current = restoredPosition;
+      setCurrentTime(restoredPosition);
+    } else {
+      setCurrentTime(0);
+    }
     setLoadError(null);
     if (skipIndexPlaybackRef.current) {
       skipIndexPlaybackRef.current = false;
@@ -436,6 +472,40 @@ export function PlayerProvider({
   }, [currentIndex]);
 
   useEffect(() => {
+    if (!hasStarted && currentTime <= 0) return;
+    const state: PersistedPlayerState = {
+      trackId: current.id,
+      currentTime,
+      volume,
+      muted,
+      shuffle,
+      repeatMode,
+      hasStarted,
+      savedAt: Date.now(),
+    };
+    const timer = window.setTimeout(() => writePersistedPlayerState(state), 500);
+    return () => window.clearTimeout(timer);
+  }, [current.id, currentTime, hasStarted, muted, repeatMode, shuffle, volume]);
+
+  useEffect(() => {
+    const saveNow = () => {
+      if (!hasStarted && currentTime <= 0) return;
+      writePersistedPlayerState({
+        trackId: currentRef.current.id,
+        currentTime,
+        volume: volumeRef.current,
+        muted: mutedRef.current,
+        shuffle: shuffleRef.current,
+        repeatMode: repeatModeRef.current,
+        hasStarted,
+        savedAt: Date.now(),
+      });
+    };
+    window.addEventListener("beforeunload", saveNow);
+    return () => window.removeEventListener("beforeunload", saveNow);
+  }, [currentTime, hasStarted]);
+
+  useEffect(() => {
     const interval = window.setInterval(() => {
       const ctx = contextRef.current;
       const buffer = buffersRef.current.get(currentRef.current.id);
@@ -465,7 +535,11 @@ export function PlayerProvider({
             const activeGain = gainRef.current;
             const now = ctx.currentTime;
             const nextNodes = startBuffer(nextTrack, nextBuffer, 0, 0);
-            const fadeDuration = Math.max(0.08, remaining);
+            const fadeDuration = clamp(Math.min(remaining, analysis.fadeSeconds), 0.35, 1.4);
+            skipIndexPlaybackRef.current = true;
+            pausedAtRef.current = 0;
+            setCurrentIndex(nextIdx);
+            setCurrentTime(0);
             activeGain?.gain.linearRampToValueAtTime(0, now + fadeDuration);
             nextNodes.gain.gain.linearRampToValueAtTime(mutedRef.current ? 0 : volumeRef.current, now + fadeDuration);
             window.setTimeout(() => {
@@ -478,10 +552,6 @@ export function PlayerProvider({
               shouldAutoAdvanceRef.current = true;
               sourceRef.current = nextNodes.source;
               gainRef.current = nextNodes.gain;
-              pausedAtRef.current = 0;
-              skipIndexPlaybackRef.current = true;
-              setCurrentIndex(nextIdx);
-              setCurrentTime(0);
               cleanupBuffers(nextIdx);
               transitioningRef.current = false;
             }, Math.max(80, fadeDuration * 1000));
@@ -573,6 +643,46 @@ export function usePlayer() {
   const ctx = useContext(Ctx);
   if (!ctx) throw new Error("usePlayer must be used inside PlayerProvider");
   return ctx;
+}
+
+function readPersistedPlayerState(tracks: Track[]) {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(PLAYER_STORAGE_KEY);
+    if (!raw) return null;
+    const state = JSON.parse(raw) as Partial<PersistedPlayerState>;
+    if (!state.trackId || !["off", "all", "one"].includes(String(state.repeatMode))) return null;
+    const index = tracks.findIndex((track) => track.id === state.trackId);
+    if (index < 0) return null;
+    return {
+      index,
+      state: {
+        trackId: state.trackId,
+        currentTime: finiteNumber(state.currentTime, 0),
+        volume: clamp(finiteNumber(state.volume, 0.8), 0, 1),
+        muted: Boolean(state.muted),
+        shuffle: Boolean(state.shuffle),
+        repeatMode: state.repeatMode as RepeatMode,
+        hasStarted: Boolean(state.hasStarted),
+        savedAt: finiteNumber(state.savedAt, Date.now()),
+      },
+    };
+  } catch {
+    return null;
+  }
+}
+
+function writePersistedPlayerState(state: PersistedPlayerState) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(PLAYER_STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    /* localStorage may be unavailable in private mode */
+  }
+}
+
+function finiteNumber(value: unknown, fallback: number) {
+  return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
 function analyzeAudioBuffer(buffer: AudioBuffer): AudioAnalysis {
